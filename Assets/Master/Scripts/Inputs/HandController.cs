@@ -19,8 +19,10 @@ public class HandController : MonoBehaviour
     InputActionMap _controllerInputMap;
     InputAction _triggerActions;
 
+#if UNITY_EDITOR
     [Header("Debugging")]
     [SerializeField] private bool m_debugMode = false;
+#endif
 
     private void Start()
     {
@@ -28,6 +30,8 @@ public class HandController : MonoBehaviour
             Debug.LogError("Failed to initializing Hand Controller.");
         else
         {
+
+#if UNITY_EDITOR
 
             if (m_debugMode)
             {
@@ -47,6 +51,7 @@ public class HandController : MonoBehaviour
                     }
                 };
             }
+#endif
 
         }
     }
