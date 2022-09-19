@@ -8,16 +8,28 @@ public class Grab : MonoBehaviour
 {
     [Header("Setup")]
     [Space(2)]
+    [SerializeField] private InteractionManager _InteractionManager;
+    [Space(5)]
     [SerializeField] private bool _IsHolding;
     [SerializeField] private GameObject _GrabedItem;
     [SerializeField] private Rigidbody _GrabedItemRB;
+    [Space(4)]
     [SerializeField] public UnityEvent<GameObject> _GrabEvent;
+    [Space(4)]
     [SerializeField] private LineRenderer _Line;
-    [Space(2)]
-    [Header("Setting")]
-    [SerializeField] private float _SmoothTime;
-    [SerializeField] private float _Range;
+    
 
+
+    private float _SmoothTime;
+    private float _Range;
+    private bool _ClickGrab;
+
+    private void Start()
+    {
+        _SmoothTime = _InteractionManager.SmoothTime;
+        _Range = _InteractionManager.Range;
+        _ClickGrab = _InteractionManager.ClickGrab;
+    }
 
     private Vector3 Velocity;
 
