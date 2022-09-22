@@ -6,24 +6,25 @@ public class GroupManager : MonoBehaviour
 {
     [Header("Setup")]
     [SerializeField] GameObject _Player;
-    [SerializeField] GameObject _Prefab;
+    [SerializeField] List<GameObject> _Prefab = new List<GameObject>();
     [SerializeField] int _GroupCount;
-    [SerializeField] Vector3 _SpawnArea;
+    [SerializeField] Transform _SpawnPoint;
     [Space(5)]
     [Header("Setting")]
     [SerializeField] private bool _RandomSpawn;
-    [SerializeField] private float _RotationSpeed;
+    [SerializeField] private Vector3 _SpawnArea;
     [SerializeField] private float _GapDistance;
     [SerializeField] private float _StopDistance;
+    [SerializeField] private float _RangedDistance;
     [SerializeField] private GameObject[] _AllUnits;
 
     private Vector3 pos;
 
     public GameObject Player { get { return _Player; } }
     public GameObject[] Units { get { return _AllUnits; } }
-    public float RotationSpeed { get { return _RotationSpeed; } private set { } }
     public float GapDistance { get { return _GapDistance; } private set { } }
     public float StopDistance { get { return _StopDistance; } private set { } }
+    public float RangedDistance { get { return _RangedDistance; } private set { } }
 
     private void Start()
     {
@@ -32,15 +33,23 @@ public class GroupManager : MonoBehaviour
         {
             if (_RandomSpawn)
             {
-                pos = this.transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
+                pos = _SpawnPoint.transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
             }
             else
             {
-                pos = this.transform.position;
+                pos = _SpawnPoint.transform.position;
             }
             
-            _AllUnits[i] = Instantiate(_Prefab, pos, Quaternion.identity);
-            _AllUnits[i].GetComponent<GroundSpider>().SetGroupManager = this;
+            _AllUnits[i] = Instantiate(_Prefab[Random.Range(0, _Prefab.Count)], pos, Quaternion.identity);
+            if (_AllUnits[i].GetComponent<GroundSpider>() != null)
+            {
+                _AllUnits[i].GetComponent<GroundSpider>().SetGroupManager = this;
+            }
+            else
+            {
+                _AllUnits[i].GetComponent<RangedSpider>().SetGroupManager = this;
+            }
+            
         }
     }
 }
