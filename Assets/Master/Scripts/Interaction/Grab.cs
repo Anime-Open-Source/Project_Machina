@@ -11,86 +11,61 @@ public class Grab : MonoBehaviour
     [SerializeField] private InteractionManager _InteractionManager;
     [Space(5)]
     [SerializeField] private bool _IsHolding;
-    [SerializeField] private GameObject _GrabedItem;
-    [SerializeField] private Rigidbody _GrabedItemRB;
-    [Space(4)]
-    [SerializeField] public UnityEvent<GameObject> _GrabEvent;
-    [Space(4)]
-    [SerializeField] private LineRenderer _Line;
-    
 
-
-    private float _SmoothTime;
     private float _Range;
     private bool _ClickGrab;
 
     private void Start()
     {
-        _SmoothTime = _InteractionManager.SmoothTime;
         _Range = _InteractionManager.Range;
         _ClickGrab = _InteractionManager.ClickGrab;
     }
 
-    private Vector3 Velocity;
+    #region Grab Functions
 
-    private void Update()
-    {
-        if(_Line != null)
-        {
-            _Line.SetPosition(0, transform.position);
-            _Line.SetPosition(1, transform.position + transform.forward);
-        }
-        
-
-        if (_IsHolding)
-        {
-            _GrabedItem.transform.position = Vector3.SmoothDamp(_GrabedItem.transform.position, transform.position, ref Velocity, _SmoothTime);
-            _GrabedItem.transform.rotation = transform.rotation;
-        }
-    }
-
+    #region Raybase Grab Function
     public void RayGrab(InputAction.CallbackContext context)
     {
-        GameObject c_Target = gameObject;
+        IGrabable c_Target = null;
         if (!_IsHolding)
         {
             Physics.Raycast(transform.position, transform.position + transform.forward * _Range, out RaycastHit hit);
             if (hit.transform.tag == "grab")
             {
                 Debug.Log("HIT!!");
-                c_Target = hit.transform.gameObject;
+                c_Target = hit.transform.gameObject.GetComponent<IGrabable>();
                 GrabItem(c_Target);
             }
         }
 
-        if (!context.ReadValueAsButton())
+
+        if (!context.ReadValueAsButton() && !_ClickGrab && c_Target != null)
         {
             Debug.Log("Detached");
             Detached(c_Target);
         }
+
+        if (context.performed && _ClickGrab && c_Target != null)
+        {
+            Debug.Log("Detached");
+            Detached(c_Target);
+        }
+
     }
+    #endregion
 
     #region Grab and Detached
-    private void GrabItem(GameObject Target)
+    private void GrabItem(IGrabable Target)
     {
-        _GrabEvent.Invoke(Target);
-
         _IsHolding = true;
-        _GrabedItem = Target;
-        _GrabedItemRB = _GrabedItem.GetComponent<Rigidbody>();
-        _GrabedItemRB.isKinematic = true;
+        Target.Grabed(gameObject);
     }
-    public void Detached(GameObject Target)
+    public void Detached(IGrabable Target)
     {
-        if ( _GrabedItem == Target || _IsHolding)
-        {
-            _IsHolding = false;
-            Debug.Log("Recived by" + transform.name);
-            _GrabedItemRB.isKinematic = false;
-            _GrabedItemRB = null;
-            _GrabedItem = null;
-
-        }
+        _IsHolding = false;
+        Target.Detached(gameObject);
     }
+    #endregion
+
     #endregion
 }
