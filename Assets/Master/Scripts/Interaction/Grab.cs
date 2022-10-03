@@ -14,6 +14,7 @@ public class Grab : MonoBehaviour
 
     private float _Range;
     private bool _ClickGrab;
+    private IGrabable c_Target;
 
     private void Start()
     {
@@ -26,26 +27,26 @@ public class Grab : MonoBehaviour
     #region Raybase Grab Function
     public void RayGrab(InputAction.CallbackContext context)
     {
-        IGrabable c_Target = null;
         if (!_IsHolding)
         {
+            c_Target = null;
             Physics.Raycast(transform.position, transform.position + transform.forward * _Range, out RaycastHit hit);
-            if (hit.transform.tag == "grab")
+            if (hit.transform.CompareTag("grab"))
             {
-                Debug.Log("HIT!!");
                 c_Target = hit.transform.gameObject.GetComponent<IGrabable>();
                 GrabItem(c_Target);
             }
+            
         }
 
 
-        if (!context.ReadValueAsButton() && !_ClickGrab && c_Target != null)
+        if (!context.ReadValueAsButton() && !_ClickGrab)
         {
             Debug.Log("Detached");
             Detached(c_Target);
         }
 
-        if (context.performed && _ClickGrab && c_Target != null)
+        if (context.performed && _ClickGrab)
         {
             Debug.Log("Detached");
             Detached(c_Target);
