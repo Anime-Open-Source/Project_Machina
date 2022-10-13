@@ -5,10 +5,10 @@ using UnityEngine;
 public class GroupManager : MonoBehaviour
 {
     [Header("Setup")]
-    [SerializeField] GameObject _Player;
-    [SerializeField] List<GameObject> _Prefab = new List<GameObject>();
-    [SerializeField] int _GroupCount;
-    [SerializeField] Transform _SpawnPoint;
+    [SerializeField] private GameObject _Player;
+    [SerializeField] private List<GameObject> _Prefab = new List<GameObject>();
+    [SerializeField] private int _GroupCount;
+    [SerializeField] private List<GameObject> _SpawnPoint = new List<GameObject>();
     [Space(5)]
     [Header("Setting")]
     [SerializeField] private bool _RandomSpawn;
@@ -33,11 +33,11 @@ public class GroupManager : MonoBehaviour
         {
             if (_RandomSpawn)
             {
-                pos = _SpawnPoint.transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
+                pos = _SpawnPoint[Random.Range(0, _SpawnPoint.Count)].transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
             }
             else
             {
-                pos = _SpawnPoint.transform.position;
+                pos = _SpawnPoint[0].transform.position;
             }
             
             _AllUnits[i] = Instantiate(_Prefab[Random.Range(0, _Prefab.Count)], pos, Quaternion.identity);

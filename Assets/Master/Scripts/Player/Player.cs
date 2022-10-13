@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class EnemyBase : MonoBehaviour, IDamageable
+public class Player : MonoBehaviour, IDamageable
 {
     #region Interface Implementation
     public void DoDamage(float Damage, float Piercing)
@@ -36,25 +36,17 @@ public class EnemyBase : MonoBehaviour, IDamageable
     }
     #endregion
 
-
-    [Header("Setup")]
-    [SerializeField] private EnemyStats _Stats;
-    [SerializeField] private Animator _Animator;
+    [SerializeField] private PlayerStats _Stats;
     [SerializeField] private UnityEvent<Vector3> _OnHitEvent;
     [SerializeField] private UnityEvent<Vector3> _OnDieEvent;
+
+    private void Die()
+    {
+        _OnDieEvent.Invoke(transform.position);
+    }
 
     private void Awake()
     {
         _Stats = Instantiate(_Stats);
     }
-
-    public EnemyStats Stats { get { return _Stats; } private set { } }
-
-    public virtual void AttackTarget(GameObject Target) { }
-    private void Die() 
-    {
-        Debug.Log("Dead");
-        _OnDieEvent.Invoke(transform.position);
-    }
-
 }

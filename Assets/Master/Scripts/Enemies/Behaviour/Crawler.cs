@@ -14,6 +14,10 @@ public class Crawler : EnemyBase
     private Vector3 _Offests;
     private NavMeshAgent _Agent;
 
+    private float _ColldownTime;
+
+    private bool _CanAttack = true;
+
     public GroupManager SetGroupManager { get { return _GroupManager; } set { _GroupManager = value; } }
 
     private void Start()
@@ -29,7 +33,26 @@ public class Crawler : EnemyBase
     {
         
         if (Vector3.Distance(transform.position, _PlayerDirection) <= _GroupManager.StopDistance)
+        {
             _Agent.isStopped = true;
+
+            _ColldownTime += Time.deltaTime;
+
+            if (_CanAttack)
+            {
+                AttackTarget(_GroupManager.Player);
+                _CanAttack = false;
+                _ColldownTime = 0;
+            }
+
+            if (_ColldownTime >= 3f)
+            {
+                _CanAttack = true;
+            }
+        }
+
+
+        
 
     }
 
@@ -46,6 +69,11 @@ public class Crawler : EnemyBase
         _PlayerDirection += _Offests;
    
 
+    }
+
+    public override void AttackTarget(GameObject Target)
+    {
+        Target.GetComponent<IDamageable>().DoDamage(Stats.Damage, Stats.Piercing);
     }
 
 
