@@ -41,13 +41,13 @@ public class GroupManager : MonoBehaviour
             }
             
             _AllUnits[i] = Instantiate(_Prefab[Random.Range(0, _Prefab.Count)], pos, Quaternion.identity);
-            if (_AllUnits[i].GetComponent<GroundSpider>() != null)
+            if (_AllUnits[i].GetComponent<Crawler>() != null)
             {
-                _AllUnits[i].GetComponent<GroundSpider>().SetGroupManager = this;
+                _AllUnits[i].GetComponent<Crawler>().SetGroupManager = this;
             }
             else
             {
-                _AllUnits[i].GetComponent<RangedSpider>().SetGroupManager = this;
+                _AllUnits[i].GetComponent<Cannoneer>().SetGroupManager = this;
             }
             
         }

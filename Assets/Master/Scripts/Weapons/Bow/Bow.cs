@@ -16,8 +16,7 @@ public class Bow : WeaponBase, IGrabable
     [SerializeField] private float _SmoothTime;
     //Temporary solution
     [SerializeField] private InteractionManager _InterManager;
-    
-    
+
     public float Charge { get { return _Charge; } set { _Charge = value; } }
     public float SmoothTime { get { return _SmoothTime; } private set {} }
 
@@ -40,12 +39,6 @@ public class Bow : WeaponBase, IGrabable
     private void Update()
     {
         _Visualizer.Normalized = _Charge * _Multiplier;
-
-        if (PrimaryHandTransform != null)
-        {
-            transform.position = PrimaryHandTransform.position;
-            transform.rotation = PrimaryHandTransform.rotation;
-        }
 
         if (IsGrabbed)
         {

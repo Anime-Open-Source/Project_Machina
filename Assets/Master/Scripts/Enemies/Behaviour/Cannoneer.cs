@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 
-public class RangedSpider : MonoBehaviour
+public class Cannoneer : MonoBehaviour
 {
     private GroupManager _GroupManager;
     private Transform _Target;

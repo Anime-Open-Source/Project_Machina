@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+[RequireComponent(typeof(NavMeshAgent))]
 
-public class GroundSpider : MonoBehaviour
+public class Crawler : EnemyBase
 {
-    [SerializeField] private GroupManager _GroupManager;
-
-    private float _Speed = 3f;
-    private Vector3 _MoveDirection;
-    [SerializeField] private Vector3 _PlayerDirection;
+    private GroupManager _GroupManager;
+    private Vector3 _PlayerDirection;
     private GameObject[] _Units;
     private Vector3 _Total;
     private Vector3 _Center;
@@ -23,7 +21,7 @@ public class GroundSpider : MonoBehaviour
         _Units = _GroupManager.Units;
         _Agent = GetComponent<NavMeshAgent>();
         _PlayerDirection = _GroupManager.Player.transform.position;
-        FindOffsets();
+        //FindOffsets();
         _Agent.SetDestination(_PlayerDirection);
     }
 

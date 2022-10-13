@@ -63,4 +63,14 @@ public class WeaponBase : MonoBehaviour, IGrabable
     public SkillBase Skill { get { return _Skill; } private set { } }
     public SkillManager SkillManager { get { return _SkillManager; } private set { } }
 
+
+    private void Update()
+    {
+        if (_PrimaryHandTransform != null)
+        {
+            transform.position = PrimaryHandTransform.position;
+            transform.rotation = PrimaryHandTransform.rotation;
+        }
+    }
+
 }
