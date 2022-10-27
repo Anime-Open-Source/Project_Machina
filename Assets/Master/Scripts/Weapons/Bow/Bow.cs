@@ -2,55 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bow : WeaponBase, IGrabable
+public class Bow : WeaponBase
 {
     [Space(10)]
-    [SerializeField] private BowStringVisualizer _Visualizer;
-    [SerializeField] private Transform _PullPoint;
-    [SerializeField] private float _Charge;
-
+    [SerializeField] private GameObject _PojectileObject;
+    [SerializeField] private Transform _ProjectileSpawnPoint;
 
     [Header("Setting")]
     [SerializeField] private float _MinimalPull;
     [SerializeField] private float _Multiplier;
     [SerializeField] private float _SmoothTime;
     //Temporary solution
-    [SerializeField] private InteractionManager _InterManager;
 
-    public float Charge { get { return _Charge; } set { _Charge = value; } }
+
+    private Projectile _Projectile;
+
     public float SmoothTime { get { return _SmoothTime; } private set {} }
-
-
     public float MinimalPull { get { return _MinimalPull; } private set { } }
 
     private void Start()
     {
-        if (!WeaponCollider)
-            Debug.Break();
-
-        _Visualizer.Normalized = _Charge;
-
-        if (WeaponCollider.enabled)
-            _PullPoint.gameObject.SetActive(false);
-
+        
+        Init();
         
     }
 
-    private void Update()
+    public void Shoot(float LaunchPower)
     {
-        _Visualizer.Normalized = _Charge * _Multiplier;
+        Vector3 c_Forward = transform.forward + transform.position;
+        Vector3 c_GroundForward = new Vector3(c_Forward.x, transform.position.y, c_Forward.z);
+        float c_LaunchAngle = Vector3.Angle(c_Forward, c_GroundForward);
 
-        if (IsGrabbed)
-        {
-            _PullPoint.gameObject.SetActive(true);
-            _InterManager.UseRayGrab = false;
-        }
-        else
-        {
-            
-            _PullPoint.gameObject.SetActive(false);
-            _InterManager.UseRayGrab = true;
-        }
+        
+        Instantiate<GameObject>(_PojectileObject, _ProjectileSpawnPoint.position, transform.rotation);
+        _Projectile.AssignParameter(LaunchPower * _Multiplier, transform.position.y, c_LaunchAngle);
 
     }
+
+    private void Init()
+    {
+        _Projectile = _PojectileObject.GetComponent<Projectile>();
+    }
+
 }

@@ -2,30 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BowString : MonoBehaviour, IGrabable
+public class BowString : MonoBehaviour
 {
-    #region Interface Implementation
-    public void Detached(GameObject Hand)
-    {
-        
-        _HandTransform = null;
-        _IsGrabbed = false;
-    }
-
-    public void Grabed(GameObject Hand)
-    {
-        
-        _HandTransform = Hand.transform;
-        _IsGrabbed = true;
-
-    }
-    #endregion
-
     private void OnDisable()
     {
-        _ParentBow.Charge = 0;
-        _DotProduct = 0f;
         transform.position = _PullStartPos;
+
+        _InterManager.UseRayGrab = true;
 
         _PullStartPos = Vector3.zero;
         _LocalStartPos = Vector3.zero;
@@ -34,10 +17,13 @@ public class BowString : MonoBehaviour, IGrabable
     private void OnEnable()
     {
         _LocalStartPos = transform.localPosition;
+        _InterManager.UseRayGrab = false;
     }
 
-    private Transform _HandTransform;
-    
+    [SerializeField] private BowStringVisual _Visualizer;
+    [SerializeField] private float _Multiplier;
+    [SerializeField] private InteractionManager _InterManager;
+
     private Vector3 _Velocity;
     private Vector3 _PullStartPos;
     private Vector3 _LocalStartPos;
@@ -45,14 +31,10 @@ public class BowString : MonoBehaviour, IGrabable
     private Bow _ParentBow;
     private bool _IsGrabbed;
 
-
-    private float _DotProduct;
     private float _SmoothTime;
 
     private void Start()
     {
-        if (!this.gameObject.activeSelf)
-            _HandTransform = null;
 
         _ParentBow = transform.parent.GetComponent<Bow>();
     }
@@ -64,23 +46,24 @@ public class BowString : MonoBehaviour, IGrabable
         if (_LocalStartPos == transform.localPosition)
             _PullStartPos = transform.position;
 
-        //Check if hand is not null
-        if (_HandTransform)
-            transform.position = _HandTransform.position;
-
         //Move Back To start if not grabed
         if (!_IsGrabbed && Vector3.Distance(transform.position, _PullStartPos) >= 0f)
             transform.localPosition = Vector3.SmoothDamp(transform.localPosition, _LocalStartPos, ref _Velocity, _SmoothTime);
+            
 
-        Vector3 Forward = _ParentBow.transform.TransformDirection(Vector3.forward);
-        Vector3 Other = transform.position - _ParentBow.transform.position;
-        _DotProduct = Vector3.Dot(Forward, Other); ;
+        _Visualizer.PullPoint.position = transform.position;
+
+    }
 
 
-        if (_DotProduct <= _ParentBow.MinimalPull)
-            _ParentBow.Charge = -_DotProduct;
-        else
-            _ParentBow.Charge = 0;
+    public void OnGrabbed(Transform GrabTransform)
+    {
+        _IsGrabbed = true;
+    }
 
+    public void OnDetached(Transform GrabTransform)
+    {
+        _IsGrabbed = false;
+        _ParentBow.Shoot(_Visualizer.PullPower);
     }
 }
