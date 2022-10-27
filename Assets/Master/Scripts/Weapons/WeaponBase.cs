@@ -2,55 +2,139 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponBase : MonoBehaviour, IGrabable
+public class WeaponBase : MonoBehaviour /*,IGrabable*/
 {
-    #region Inteface Implemetation
-    public void Detached(GameObject Hand)
-    {
-        if (_IsGrabbed && _PrimaryHandTransform == Hand.transform)
-        {
-            _IsGrabbed = false;
-            WeaponCollider.enabled = true;
-            WeaponRigidbody.isKinematic = false;
-            _PrimaryHandTransform = null;
-        }
-    }
+    //#region Inteface Implemetation
+    //public void Detached(GameObject Hand)
+    //{
+    //    if (_IsGrabbed && _PrimaryHandTransform == Hand.transform)
+    //    {
+    //        _IsGrabbed = false;
+    //        WeaponCollider.enabled = true;
+    //        WeaponRigidbody.isKinematic = false;
+    //        _PrimaryHandTransform = null;
+    //    }
+    //}
 
-    public void Grabed(GameObject Hand)
-    {
-        if (!_IsGrabbed)
-        {
-            _IsGrabbed = true;
-            WeaponRigidbody.isKinematic = true;
-            WeaponCollider.enabled = false;
-            _PrimaryHandTransform = Hand.transform;
-        }
+    //public void Grabed(GameObject Hand)
+    //{
+    //    if (!_IsGrabbed)
+    //    {
+    //        _IsGrabbed = true;
+    //        WeaponRigidbody.isKinematic = true;
+    //        WeaponCollider.enabled = false;
+    //        _PrimaryHandTransform = Hand.transform;
+    //    }
+    //    else
+    //    {
+    //        _SecondaryGrabPoint = Hand.transform;
+    //    }
         
-    }
-    #endregion
+    //}
+    //#endregion
 
     [Header("Setup")]
     [Space(10)]
     [SerializeField] private WeaponStats _Stats;
     [Space(5)]
     [SerializeField] private Transform _PrimaryHandTransform;
-    [SerializeField] private bool _IsGrabbed;
-    [SerializeField] private Transform _GrabPoint;
+    [SerializeField] private Transform _SecondaryHandTransform;
     [Space(5)]
-    [SerializeField] private Collider _WeaponCollider;
-    [SerializeField] private Rigidbody _WeaponRigidbody;
+    [SerializeField] private bool _IsGrabbed;
+    [SerializeField] private bool _IsTwoHanded;
+    [SerializeField] private bool _ForwardCorrection;
+    [SerializeField] private Transform _PrimaryGrabPoint;
+    [SerializeField] private Transform _SecondaryGrabPoint;
+    [SerializeField] private GameObject _Model;
+    //[Space(5)]
+    //[SerializeField] private Collider _WeaponCollider;
+    //[SerializeField] private Rigidbody _WeaponRigidbody;
     [Space(5)]
     [SerializeField] private SkillBase _Skill;
     [SerializeField] private SkillManager _SkillManager;
+
+    private bool _PrimaryGrabbed;
+    private bool _SecondaryGrabbed;
     
+
 
     public WeaponStats Stats { get { return _Stats; }private set { } }
     public Transform PrimaryHandTransform { get { return _PrimaryHandTransform; } private set { } }
-    public bool IsGrabbed { get { return _IsGrabbed; } private set {} }
-    public Transform GrabPoint { get { return _GrabPoint; } private set { } }
-    public Collider WeaponCollider { get { return _WeaponCollider; } private set { } }
-    public Rigidbody WeaponRigidbody { get { return _WeaponRigidbody; } private set { } }
+    public bool IsGrabbed { get { return _IsGrabbed; } private set { } }
+    public bool IsTwoHanded { get { return _IsTwoHanded; } private set {} }
+    public Transform PrimaryGrabPoint { get { return _PrimaryGrabPoint; } private set { } }
+    public Transform SecondaryGrabPoint { get { return _SecondaryGrabPoint; } private set { } }
+    //public Collider WeaponCollider { get { return _WeaponCollider; } private set { } }
+    //public Rigidbody WeaponRigidbody { get { return _WeaponRigidbody; } private set { } }
     public SkillBase Skill { get { return _Skill; } private set { } }
     public SkillManager SkillManager { get { return _SkillManager; } private set { } }
+
+    private void Update()
+    {
+        if (!_PrimaryGrabbed)
+        {
+            _SecondaryGrabPoint.gameObject.SetActive(false);
+            return;
+        }
+        else
+            _SecondaryGrabPoint.gameObject.SetActive(true);
+
+        transform.position = _PrimaryGrabPoint.position;
+
+        if (IsBothHand())
+        {
+            transform.up = (_PrimaryGrabPoint.position - _SecondaryGrabPoint.position);
+
+        }
+        else if (!_ForwardCorrection)
+            transform.rotation = _PrimaryGrabPoint.rotation;
+        else if (_ForwardCorrection)
+            transform.up = _PrimaryGrabPoint.forward;
+
+
+    }
+
+    public void OnGrabbed(Transform GrabTransform)
+    {
+        if (GrabTransform == _PrimaryGrabPoint)
+        {
+            _PrimaryGrabbed = true;
+        }
+        else
+        {
+            _SecondaryGrabbed = true;
+        }
+    }
+
+    public void OnDetached(Transform GrabTransform)
+    {
+        if (GrabTransform == _PrimaryGrabPoint)
+        {
+            _PrimaryGrabbed = false;
+        }
+        else
+        {
+            _SecondaryGrabbed = false;
+        }
+    }
+
+    private bool IsBothHand()
+    {
+        if (_IsTwoHanded)
+        {
+            if (_PrimaryGrabbed && _SecondaryGrabbed)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward);
+        Gizmos.DrawLine(transform.position, transform.position + transform.up);
+    }
 
 }
