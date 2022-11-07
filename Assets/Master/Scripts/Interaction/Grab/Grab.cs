@@ -9,6 +9,8 @@ public class Grab : MonoBehaviour
     [Header("Setup")]
     [Space(2)]
     [SerializeField] private InteractionManager _InteractionManager;
+    [SerializeField] private Animator _Animator;
+    [SerializeField] private GameObject _Palm;
     [Space(5)]
     [SerializeField] private bool _IsHolding;
     [SerializeField] private bool _IsClicked;
@@ -27,8 +29,11 @@ public class Grab : MonoBehaviour
 
     private void Update()
     {
+        _Animator.SetFloat("Blend", 1f);
         if (_GrabedObject != null)
         {
+            _Animator.SetFloat("Blend", -1f);
+
             if (!_GrabedObject.activeSelf)
                 Detached(c_Target);
         }
@@ -125,7 +130,7 @@ public class Grab : MonoBehaviour
     {
         Debug.Log(string.Format("Attached to : {0}", this.name));
         _IsHolding = true;
-        Target.Grabed(this.gameObject);
+        Target.Grabed(_Palm);
     }
     public void Detached(IGrabable Target)
     {
@@ -133,7 +138,7 @@ public class Grab : MonoBehaviour
         _IsHolding = false;
         _IsClicked = false;
         _GrabedObject = null;
-        Target.Detached(this.gameObject);
+        Target.Detached(_Palm);
     }
     #endregion
 
