@@ -52,7 +52,7 @@ public class GrabPointBase : MonoBehaviour, IGrabable
 
     private void OnDisable()
     {
-        if(_DetectionCollider && !_HandTransform)
+        if(_DetectionCollider && _HandTransform != null)
             Detached(_HandTransform.gameObject);
     }
 

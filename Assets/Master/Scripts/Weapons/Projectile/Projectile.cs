@@ -29,8 +29,9 @@ public class Projectile : MonoBehaviour
 
     private void Start()
     {
+        _ProjectileStabilizer.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up);
         _InitHeight = transform.position.y;
-        _StabilizingForward = transform.rotation;
+        
     }
 
     private void Update()
@@ -44,8 +45,6 @@ public class Projectile : MonoBehaviour
 
             float X = Vx * t;
             float Y = Vy * t - (0.5f * -Physics.gravity.y * Mathf.Pow(t, 2f));
-
-            _ProjectileStabilizer.rotation = _StabilizingForward;
 
             Vector3 c_LocalPosition = new Vector3(0, Y, X);
             Vector3 c_GlobalPosition = _ProjectileStabilizer.TransformPoint(c_LocalPosition);
@@ -69,26 +68,6 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         _Hit = true;
-    }
-
-
-    private Vector3 GetAxis(Vector3 Forward, Vector3 Up)
-    {
-        Vector3 c_RotationAxis =  Vector3.Cross(Forward, Up);
-        return c_RotationAxis;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Vector3 c_Ground = transform.position + transform.forward;
-        Vector3 c_GroundUp = transform.position + transform.up;
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, GetAxis(c_Ground, c_GroundUp) + transform.position);
-        Gizmos.color = Color.blue;
-        Gizmos.DrawLine(transform.position, c_Ground);
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(transform.position, c_GroundUp);
     }
 
 }
