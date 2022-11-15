@@ -5,12 +5,14 @@ using UnityEngine;
 public class GroupManager : MonoBehaviour
 {
     [Header("Setup")]
+    [Space(5)]
     [SerializeField] private GameObject _Player;
     [SerializeField] private List<GameObject> _Prefab = new List<GameObject>();
     [SerializeField] private int _GroupCount;
     [SerializeField] private List<GameObject> _SpawnPoint = new List<GameObject>();
     [Space(5)]
     [Header("Setting")]
+    [Space(5)]
     [SerializeField] private bool _RandomSpawn;
     [SerializeField] private Vector3 _SpawnArea;
     [SerializeField] private float _GapDistance;
@@ -26,7 +28,7 @@ public class GroupManager : MonoBehaviour
     public float StopDistance { get { return _StopDistance; } private set { } }
     public float RangedDistance { get { return _RangedDistance; } private set { } }
 
-    private void Start()
+    private void SpawnUnits()
     {
         _AllUnits = new GameObject[_GroupCount];
         for (int i = 0; i < _GroupCount; i++)
@@ -52,4 +54,22 @@ public class GroupManager : MonoBehaviour
             
         }
     }
+
+    public void SpawnEnemys()
+    {
+        SpawnUnits();
+    }
+
+    public void ClearEnemys()
+    {
+        if (_AllUnits.Length < 0)
+        {
+            for (int i = 0; i < _AllUnits.Length; i++)
+            {
+                Destroy(_AllUnits[i].gameObject);
+            }
+        }
+    }
+
+
 }
