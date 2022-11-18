@@ -4,34 +4,6 @@ using UnityEngine;
 
 public class WeaponBase : MonoBehaviour /*,IGrabable*/
 {
-    //#region Inteface Implemetation
-    //public void Detached(GameObject Hand)
-    //{
-    //    if (_IsGrabbed && _PrimaryHandTransform == Hand.transform)
-    //    {
-    //        _IsGrabbed = false;
-    //        WeaponCollider.enabled = true;
-    //        WeaponRigidbody.isKinematic = false;
-    //        _PrimaryHandTransform = null;
-    //    }
-    //}
-
-    //public void Grabed(GameObject Hand)
-    //{
-    //    if (!_IsGrabbed)
-    //    {
-    //        _IsGrabbed = true;
-    //        WeaponRigidbody.isKinematic = true;
-    //        WeaponCollider.enabled = false;
-    //        _PrimaryHandTransform = Hand.transform;
-    //    }
-    //    else
-    //    {
-    //        _SecondaryGrabPoint = Hand.transform;
-    //    }
-        
-    //}
-    //#endregion
 
     [Header("Setup")]
     [Space(10)]
@@ -46,9 +18,6 @@ public class WeaponBase : MonoBehaviour /*,IGrabable*/
     [SerializeField] private Transform _PrimaryGrabPoint;
     [SerializeField] private Transform _SecondaryGrabPoint;
     [SerializeField] private GameObject _Model;
-    //[Space(5)]
-    //[SerializeField] private Collider _WeaponCollider;
-    //[SerializeField] private Rigidbody _WeaponRigidbody;
     [Space(5)]
     [SerializeField] private SkillBase _Skill;
     [SerializeField] private SkillManager _SkillManager;
@@ -64,8 +33,6 @@ public class WeaponBase : MonoBehaviour /*,IGrabable*/
     public bool IsTwoHanded { get { return _IsTwoHanded; } private set {} }
     public Transform PrimaryGrabPoint { get { return _PrimaryGrabPoint; } private set { } }
     public Transform SecondaryGrabPoint { get { return _SecondaryGrabPoint; } private set { } }
-    //public Collider WeaponCollider { get { return _WeaponCollider; } private set { } }
-    //public Rigidbody WeaponRigidbody { get { return _WeaponRigidbody; } private set { } }
     public SkillBase Skill { get { return _Skill; } private set { } }
     public SkillManager SkillManager { get { return _SkillManager; } private set { } }
 

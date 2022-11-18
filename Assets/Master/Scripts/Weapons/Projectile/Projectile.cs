@@ -9,15 +9,13 @@ public class Projectile : MonoBehaviour
     [SerializeField] private float _InitVelocity;
     [SerializeField] private float _LaunchAngle;
     [SerializeField] private float _GravityMultiplier;
-    [SerializeField] private float _InitHeight;
     [SerializeField] private Transform _ProjectileStabilizer;
 
     [SerializeField] private UnityEvent<Vector3> _OnHitEvent;
 
-    private Vector3 _Velocity;
-    private Quaternion _StabilizingForward;
-
     private bool _Hit;
+
+    private float _InitHeight;
     private float t;
 
     public void AssignParameter(float InitVelocity, float InitHeight, float LaunchAngle)
@@ -60,7 +58,8 @@ public class Projectile : MonoBehaviour
         }
         else
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 

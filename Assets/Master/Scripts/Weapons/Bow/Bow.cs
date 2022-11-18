@@ -5,7 +5,6 @@ using UnityEngine;
 public class Bow : WeaponBase
 {
     [Space(10)]
-    [SerializeField] private GameObject _PojectileObject;
     [SerializeField] private Transform _ProjectileSpawnPoint;
 
     [Header("Setting")]
@@ -14,18 +13,11 @@ public class Bow : WeaponBase
     [SerializeField] private float _SmoothTime;
     //Temporary solution
 
-
+    private GameObject _PojectileObject;
     private Projectile _Projectile;
 
     public float SmoothTime { get { return _SmoothTime; } private set {} }
     public float MinimalPull { get { return _MinimalPull; } private set { } }
-
-    private void Start()
-    {
-        
-        Init();
-        
-    }
 
     public void Shoot(float LaunchPower)
     {
@@ -33,15 +25,16 @@ public class Bow : WeaponBase
         Vector3 c_GroundForward = new Vector3(c_Forward.x, transform.position.y, c_Forward.z);
         float c_LaunchAngle = Vector3.Angle(c_Forward, c_GroundForward);
 
-        
-        Instantiate<GameObject>(_PojectileObject, _ProjectileSpawnPoint.position, transform.rotation);
+
+        //Instantiate<GameObject>(_PojectileObject, _ProjectileSpawnPoint.position, transform.rotation);
+        _PojectileObject = ProjectileManager.Instance.GetProjectile();
+
+        _PojectileObject.transform.position = _ProjectileSpawnPoint.position;
+        _PojectileObject.transform.rotation = _ProjectileSpawnPoint.rotation;
+
+        _Projectile = _PojectileObject.GetComponent<Projectile>();
         _Projectile.AssignParameter(LaunchPower * _Multiplier, transform.position.y, c_LaunchAngle);
 
-    }
-
-    private void Init()
-    {
-        _Projectile = _PojectileObject.GetComponent<Projectile>();
     }
 
 }
