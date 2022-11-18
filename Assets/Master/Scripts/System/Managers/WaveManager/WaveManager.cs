@@ -15,6 +15,7 @@ public class WaveManager : SingletonGeneric<WaveManager>
     [SerializeField] private int _MinWaveNumber;
     [SerializeField] private int _MaxWaveNumber;
 
+    private bool _IsStart;
 
     public int CurrentWaveNumber { get { return _MinWaveNumber; } private set { } }
 
@@ -23,13 +24,19 @@ public class WaveManager : SingletonGeneric<WaveManager>
 
     public void WaveStart()
     {
+        if (_IsStart)
+            return;
+
         if(_CurrentWaveNumber <= _MaxWaveNumber)
             OnWaveStart.Invoke();
+
+        _IsStart = true;
     }
 
     public void WaveEnd()
     {
         OnWaveStop.Invoke();
+        _IsStart = false;
     }
 
 
