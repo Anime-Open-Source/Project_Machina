@@ -25,8 +25,6 @@ public class Bow : WeaponBase
         Vector3 c_GroundForward = new Vector3(c_Forward.x, transform.position.y, c_Forward.z);
         float c_LaunchAngle = Vector3.Angle(c_Forward, c_GroundForward);
 
-
-        //Instantiate<GameObject>(_PojectileObject, _ProjectileSpawnPoint.position, transform.rotation);
         _PojectileObject = ProjectileManager.Instance.GetProjectile();
 
         _PojectileObject.transform.position = _ProjectileSpawnPoint.position;

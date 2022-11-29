@@ -7,22 +7,33 @@ public class BowString : MonoBehaviour
     private void OnDisable()
     {
         transform.position = _PullStartPos;
-
-        _InterManager.UseRayGrab = true;
-
         _PullStartPos = Vector3.zero;
         _LocalStartPos = Vector3.zero;
+
+        if (_InteractionManager.detectionType == c_OriginalDetectionType)
+            return;
+        else
+            _InteractionManager.ChangeDetectionType(c_OriginalDetectionType);
+
     }
 
     private void OnEnable()
     {
         _LocalStartPos = transform.localPosition;
-        _InterManager.UseRayGrab = false;
+        c_OriginalDetectionType = _InteractionManager.detectionType;
+        if (c_OriginalDetectionType == DetectionType.Collider)
+            return;
+        else
+            _InteractionManager.ChangeDetectionType(DetectionType.Collider);
     }
 
+    [Header("Setup")]
+    [Space(10)]
     [SerializeField] private BowStringVisual _Visualizer;
     [SerializeField] private float _Multiplier;
-    [SerializeField] private InteractionManager _InterManager;
+    [SerializeField] private InteractionManager _InteractionManager;
+
+    private DetectionType c_OriginalDetectionType;
 
     private Vector3 _Velocity;
     private Vector3 _PullStartPos;
@@ -63,6 +74,7 @@ public class BowString : MonoBehaviour
 
     public void OnDetached(Transform GrabTransform)
     {
+        _Visualizer.PullPoint.position = _Visualizer.CenterPoint.position;
         _IsGrabbed = false;
         _ParentBow.Shoot(_Visualizer.PullPower);
     }
