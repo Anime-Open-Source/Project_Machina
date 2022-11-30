@@ -28,7 +28,6 @@ public class Projectile : MonoBehaviour
     private void Start()
     {
         _ProjectileStabilizer.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up);
-        _InitHeight = transform.position.y;
         
     }
 
@@ -58,11 +57,26 @@ public class Projectile : MonoBehaviour
         }
         else
         {
-            //Destroy(gameObject);
+            
+            Clear();
             gameObject.SetActive(false);
         }
     }
 
+
+    private void Clear()
+    {
+        t = 0f;
+        _InitVelocity = 0f;
+        _InitHeight = 0f;
+        _LaunchAngle = 0f;
+    }
+
+
+    private void OnEnable()
+    {
+        _ProjectileStabilizer.rotation = Quaternion.Euler(transform.rotation.eulerAngles + Vector3.up);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
