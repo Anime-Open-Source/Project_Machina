@@ -1,50 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+[RequireComponent(typeof(ObjectPool))]
 public class ProjectileManager : SingletonGeneric<ProjectileManager>
 {
+
     [Header("Setup")]
-    [Space(10)]
     [SerializeField] private GameObject _ProjectilePrefab;
+    [SerializeField] private GameObject _ProjectileParent;
     [Header("Settings")]
-    [Space(10)]
-    [Min(1)]
-    [SerializeField] private int _TotalProjectile;
+    [SerializeField] private int _ProjectileCount;
 
-    private GameObject[] _PooledProjectile;
+    private ObjectPool _Pooler;
 
-    private void Awake()
+    private void Start()
     {
-        SpawnProjectile();
+        _Pooler = GetComponent<ObjectPool>();
+        _Pooler.PooledObject(_ProjectilePrefab, _ProjectileParent, _ProjectileCount);
     }
 
-    private void SpawnProjectile()
+    public GameObject GetProjectile(Transform Caller)
     {
-        _PooledProjectile = new GameObject[_TotalProjectile];
         GameObject c_Projectile;
+        c_Projectile = _Pooler.GetObject(_ProjectilePrefab);
 
-        for (int i = 0; i < _TotalProjectile; i++)
-        {
-            c_Projectile = Instantiate(_ProjectilePrefab, transform.position, Quaternion.identity);
-            c_Projectile.SetActive(false);
-            _PooledProjectile[i] = c_Projectile;
-        }
+        if (c_Projectile == null)
+            return null;
+
+        c_Projectile.transform.position = Caller.position;
+        c_Projectile.transform.rotation = Caller.rotation;
+
+        return c_Projectile;
     }
-
-    public GameObject GetProjectile()
-    {
-        for (int i = 0; i < _PooledProjectile.Length; i++)
-        {
-            if (!_PooledProjectile[i].activeInHierarchy)
-            {
-                _PooledProjectile[i].SetActive(true);
-                return _PooledProjectile[i];
-            }
-
-        }
-
-        return null;
-    }
-
 }
