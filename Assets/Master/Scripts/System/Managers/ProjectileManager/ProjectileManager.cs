@@ -11,18 +11,18 @@ public class ProjectileManager : SingletonGeneric<ProjectileManager>
     [Header("Settings")]
     [SerializeField] private int _ProjectileCount;
 
-    private ObjectPool _Pooler;
+    private ObjectPool _Pool;
 
     private void Start()
     {
-        _Pooler = GetComponent<ObjectPool>();
-        _Pooler.PooledObject(_ProjectilePrefab, _ProjectileParent, _ProjectileCount);
+        _Pool = GetComponent<ObjectPool>();
+        _Pool.PoolObject(_ProjectilePrefab, _ProjectileParent, _ProjectileCount);
     }
 
-    public GameObject GetProjectile(Transform Caller)
+    public GameObject GetProjectile(Transform Caller, GameObject ProjectilePrefabs)
     {
         GameObject c_Projectile;
-        c_Projectile = _Pooler.GetObject(_ProjectilePrefab);
+        c_Projectile = _Pool.GetObject(_ProjectilePrefab);
 
         if (c_Projectile == null)
             return null;

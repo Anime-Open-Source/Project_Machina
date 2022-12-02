@@ -69,28 +69,29 @@ public class ObjectPool : MonoBehaviour
 
 
     /// <summary>
-    /// Pool the spesified Object
+    /// Pool the specified Objects, Assign the Object to a Parent, How many of the Object to pooled
     /// </summary>
     /// <param name="ObjectToPool"></param>
     /// <param name="ParentGameObject"></param>
     /// <param name="PoolCount"></param>
-    public void PooledObject(GameObject ObjectToPool, GameObject ParentGameObject, int PoolCount = 1)
+    public void PoolObject(GameObject ObjectToPool, GameObject ParentGameObject, int PoolCount = 1)
     {
         _PoolCount = PoolCount;
 
 
         SpawnObject(ObjectToPool, ParentGameObject);
 
-
     }
 
+    
+
     /// <summary>
-    /// Pool more than one Objects
-    /// </summary>
+    /// Pool all of the Objects inside the Array, Assign the Object to a Parent, How many of each Object type to pooled
+    /// </summary>>
     /// <param name="ObjectsToPool"></param>
     /// <param name="ParentGameObject"></param>
     /// <param name="PoolCount"></param>
-    public void PooledObject(GameObject[] ObjectsToPool, GameObject ParentGameObject, int PoolCount = 1)
+    public void PoolObject(GameObject[] ObjectsToPool, GameObject ParentGameObject, int PoolCount = 1)
     {
         _PoolCount = PoolCount;
 
