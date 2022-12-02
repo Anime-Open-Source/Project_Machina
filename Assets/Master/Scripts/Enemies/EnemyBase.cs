@@ -38,14 +38,16 @@ public class EnemyBase : MonoBehaviour, IDamageable
 
 
     [Header("Setup")]
-    [SerializeField] private EnemyStats _Stats;
+    [SerializeField] private EnemyStats _StatsSO;
     [SerializeField] private Animator _Animator;
     [SerializeField] private UnityEvent<Vector3> _OnHitEvent;
     [SerializeField] private UnityEvent<Vector3> _OnDieEvent;
 
+    private EnemyStats _Stats;
+
     private void Awake()
     {
-        _Stats = Instantiate(_Stats);
+        _Stats = Instantiate(_StatsSO);
     }
 
     public EnemyStats Stats { get { return _Stats; } private set { } }
