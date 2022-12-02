@@ -25,7 +25,6 @@ public class Crawler : EnemyBase
         _Units = _GroupManager.Units;
         _Agent = GetComponent<NavMeshAgent>();
         _PlayerDirection = _GroupManager.Player.transform.position;
-        //FindOffsets();
         _Agent.SetDestination(_PlayerDirection);
     }
 
@@ -76,5 +75,23 @@ public class Crawler : EnemyBase
         Target.GetComponent<IDamageable>().DoDamage(Stats.Damage, Stats.Piercing);
     }
 
+
+    private void OnDisable()
+    {
+        if (!_Agent)
+            return;
+
+        _Agent.isStopped = true;
+    }
+
+    private void OnEnable()
+    {
+
+        if (!_Agent)
+            return;
+
+        _Agent.isStopped = false;
+        _Agent.SetDestination(_PlayerDirection);
+    }
 
 }

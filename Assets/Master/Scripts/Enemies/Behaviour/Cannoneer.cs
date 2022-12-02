@@ -9,6 +9,7 @@ public class Cannoneer : EnemyBase
 
     [Header("Setup")]
     [SerializeField] private Transform _ProjectileSpawnPoint;
+    [SerializeField] private GameObject _ProjectilePrefab;
     [Header("Settings")]
     [SerializeField] private float _LaunchPower;
     [SerializeField] private float _LaunchHeight;
@@ -52,7 +53,7 @@ public class Cannoneer : EnemyBase
 
         LockAtTarget(Target);
 
-        _ProjectileObject = ProjectileManager.Instance.GetProjectile(transform);
+        _ProjectileObject = ProjectileManager.Instance.GetProjectile(transform, _ProjectilePrefab);
         _Projectile = _ProjectileObject.GetComponent<Projectile>();
 
         _Projectile.AssignParameter(_LaunchPower, _LaunchAngel);
