@@ -14,22 +14,18 @@ public class WeaponBase : MonoBehaviour
     [Space(10)]
     [SerializeField] private WeaponStats _Stats;
     [Space(5)]
-    [SerializeField] private Transform _PrimaryHandTransform;
-    [SerializeField] private Transform _SecondaryHandTransform;
-    [Space(5)]
-    [SerializeField] private WeaponType _WeaponType;
-    [SerializeField] private bool _ForwardCorrection;
     [SerializeField] private Transform _PrimaryGrabPoint;
     [SerializeField] private Transform _SecondaryGrabPoint;
     [SerializeField] private GameObject _Model;
     [Space(5)]
     [SerializeField] private SkillBase _Skill;
     [SerializeField] private SkillManager _SkillManager;
+    [Header("Settings")]
+    [SerializeField] private WeaponType _WeaponType;
+    [SerializeField] private bool _ForwardCorrection;
 
     private bool _PrimaryGrabbed;
     private bool _SecondaryGrabbed;
-
-    protected Vector3 p_ForwardCorrectionOffsets;
 
     public WeaponStats Stats { get { return _Stats; }private set { } }
     public Transform PrimaryGrabPoint { get { return _PrimaryGrabPoint; } private set { } }
@@ -56,7 +52,9 @@ public class WeaponBase : MonoBehaviour
 
         if (_ForwardCorrection)
         {
-            transform.rotation = Quaternion.Euler(_PrimaryGrabPoint.rotation.eulerAngles + p_ForwardCorrectionOffsets);
+            Vector3 c_CorrectedForward;
+            c_CorrectedForward = _PrimaryGrabPoint.position + _PrimaryGrabPoint.forward;
+            transform.rotation = Quaternion.LookRotation(-_PrimaryGrabPoint.up, c_CorrectedForward);
             return;
         }
 
