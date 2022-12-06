@@ -7,8 +7,14 @@ public class ProjectileSkillSO : SkillBase
     [SerializeField] GameObject _Projectile;
 
     private GameObject _Caller;
+    private GameObject c_Projectile;
+
+    private int i = 0;
+
+    private bool _IsActivated;
 
     #region Interface Implementation
+
     public override void Init(GameObject contex)
     {
         Debug.Log(string.Format("Projectile Skill Start {0}", contex.name));
@@ -25,19 +31,29 @@ public class ProjectileSkillSO : SkillBase
     {
         Debug.Log(string.Format("Projectile Skill Stop {0}", contex.name));
         _Caller = null;
+        _IsActivated = false;
     }
     #endregion
 
 
-    private void LaunchProjectile(Transform LaunchPoint)
+    private void LaunchProjectile(Transform LaunchPoint/*, float deltaTime*/)
     {
+
         if (!LaunchPoint)
             return;
 
-        GameObject c_Projectile;
+        if (!_IsActivated) 
+        {
+            c_Projectile = ProjectileManager.Instance.GetProjectile(LaunchPoint, _Projectile);
 
-        c_Projectile = ProjectileManager.Instance.GetProjectile(LaunchPoint, _Projectile);
-        c_Projectile.transform.Translate(Vector3.forward * Time.deltaTime);
+        }
+            
+        
+        //c_Projectile.transform.Translate(Vector3.forward * deltaTime);
+
+        
+
+        _IsActivated = true;
 
     }
 
