@@ -6,7 +6,7 @@ public class ProjectileManager : SingletonGeneric<ProjectileManager>
 {
 
     [Header("Setup")]
-    [SerializeField] private GameObject _ProjectilePrefab;
+    [SerializeField] private GameObject[] _ProjectilePrefabs;
     [SerializeField] private GameObject _ProjectileParent;
     [Header("Settings")]
     [SerializeField] private int _ProjectileCount;
@@ -16,13 +16,13 @@ public class ProjectileManager : SingletonGeneric<ProjectileManager>
     private void Start()
     {
         _Pool = GetComponent<ObjectPool>();
-        _Pool.PoolObject(_ProjectilePrefab, _ProjectileParent, _ProjectileCount);
+        _Pool.PoolObject(_ProjectilePrefabs, _ProjectileParent, _ProjectileCount);
     }
 
     public GameObject GetProjectile(Transform Caller, GameObject ProjectilePrefabs)
     {
         GameObject c_Projectile;
-        c_Projectile = _Pool.GetObject(_ProjectilePrefab);
+        c_Projectile = _Pool.GetObject(ProjectilePrefabs);
 
         if (c_Projectile == null)
             return null;

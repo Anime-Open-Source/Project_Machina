@@ -6,7 +6,9 @@ public class ObjectPool : MonoBehaviour
 {
     private int _PoolCount = 0;
 
-    private Dictionary<string, GameObject> _PooledObjects = new Dictionary<string, GameObject>();
+    private Dictionary<string, List<GameObject>> _PooledObjects = new Dictionary<string, List<GameObject>>();
+
+    private List<GameObject> c_PooledObjectList = new List<GameObject>();
 
     #region Spawn Object Functions
 
@@ -27,12 +29,29 @@ public class ObjectPool : MonoBehaviour
 
             if (!_PooledObjects.ContainsKey(ObjectToPool.name))
             {
-                _PooledObjects.Add(ObjectToPool.name, c_Projectile);
+                c_PooledObjectList.Clear();
+                c_PooledObjectList.Add(c_Projectile);
+                _PooledObjects.Add(ObjectToPool.name, c_PooledObjectList);
                 continue;
             }
 
-            _PooledObjects[ObjectToPool.name] = c_Projectile;
+            c_PooledObjectList.Add(c_Projectile);
+            _PooledObjects[ObjectToPool.name] = c_PooledObjectList;
+
         }
+
+        //foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
+        //{
+
+        //    Debug.Log(string.Format("Key {0}, Value {1}", entry.Key, entry.Value));
+
+        //    for (int i = 0; i < entry.Value.Count; i++)
+        //    {
+        //        Debug.Log(entry.Value[i].name);
+        //    }
+
+        //}
+
     }
     #endregion
 
@@ -48,15 +67,20 @@ public class ObjectPool : MonoBehaviour
         if (!_PooledObjects.ContainsKey(ObjectToGet.name))
             return null;
 
-        foreach (KeyValuePair<string, GameObject> entry in _PooledObjects)
+        foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
         {
             if (entry.Key != ObjectToGet.name)
                 continue;
 
-            if (!entry.Value.activeInHierarchy)
+            for (int i = 0; i < entry.Value.Count; i++)
             {
-                entry.Value.SetActive(true);
-                return entry.Value;
+                Debug.Log(entry.Value[i].name);
+
+                if(!entry.Value[i].activeInHierarchy)
+                {
+                    entry.Value[i].SetActive(true);
+                    return entry.Value[i];
+                }
             }
         }
 
