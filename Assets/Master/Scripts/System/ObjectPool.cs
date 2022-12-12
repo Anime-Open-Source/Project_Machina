@@ -19,23 +19,23 @@ public class ObjectPool : MonoBehaviour
     /// <param name="ParentObject"></param>
     private void SpawnObject(GameObject ObjectToPool, GameObject ParentObject)
     {
-        GameObject c_Projectile;
+        GameObject c_Object;
 
         for (int i = 0; i < _PoolCount; i++)
         {
-            c_Projectile = Instantiate(ObjectToPool, transform.position, Quaternion.identity);
-            c_Projectile.transform.SetParent(ParentObject.transform);
-            c_Projectile.SetActive(false);
+            c_Object = Instantiate(ObjectToPool, transform.position, Quaternion.identity);
+            c_Object.transform.SetParent(ParentObject.transform);
+            c_Object.SetActive(false);
 
             if (!_PooledObjects.ContainsKey(ObjectToPool.name))
             {
                 c_PooledObjectList.Clear();
-                c_PooledObjectList.Add(c_Projectile);
+                c_PooledObjectList.Add(c_Object);
                 _PooledObjects.Add(ObjectToPool.name, c_PooledObjectList);
                 continue;
             }
 
-            c_PooledObjectList.Add(c_Projectile);
+            c_PooledObjectList.Add(c_Object);
             _PooledObjects[ObjectToPool.name] = c_PooledObjectList;
 
         }
@@ -57,7 +57,7 @@ public class ObjectPool : MonoBehaviour
 
     #region Get Pooled Object
     /// <summary>
-    /// Get Pooled Object of the Specified Type
+    /// Return Pooled Object of the Specified Type
     /// </summary>
     /// <param name="ObjectToGet"></param>
     /// <returns></returns>
@@ -86,6 +86,85 @@ public class ObjectPool : MonoBehaviour
 
         return null;
     }
+
+    /// <summary>
+    /// Return All of the Pooled Object of the Specified Type
+    /// </summary>
+    /// <param name="ObjectToGet"></param>
+    /// <returns></returns>
+    public GameObject[] GetAllObject(GameObject ObjectToGet)
+    {
+        GameObject[] entrys;
+
+        if (!_PooledObjects.ContainsKey(ObjectToGet.name))
+            return null;
+
+        foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
+        {
+            if (entry.Key != ObjectToGet.name)
+                continue;
+
+
+            entrys = new GameObject[entry.Value.Count];
+            for (int i = 0; i < entry.Value.Count; i++)
+            {
+                Debug.Log(entry.Value[i].name);
+
+                if (!entry.Value[i].activeInHierarchy)
+                {
+                    entry.Value[i].SetActive(true);
+                    entrys[i] = entry.Value[i].gameObject;
+                    
+                }
+            }
+
+            return entrys;
+
+        }
+
+        return null;
+    }
+
+    public GameObject[] GetAllObject(GameObject[] ObjectsToGet)
+    {
+        GameObject[] entrys;
+
+        for (int a = 0;a < ObjectsToGet.Length; a++)
+        {
+            if (!_PooledObjects.ContainsKey(ObjectsToGet[a].name))
+                return null;
+
+            foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
+            {
+                if (entry.Key != ObjectsToGet[a].name)
+                    continue;
+
+
+                entrys = new GameObject[entry.Value.Count];
+                for (int i = 0; i < entry.Value.Count; i++)
+                {
+                    Debug.Log(entry.Value[i].name);
+
+                    if (entry.Value[i].activeInHierarchy)
+                    {
+                        continue;
+                    }
+
+                    entry.Value[i].SetActive(true);
+                    entrys[i] = entry.Value[i].gameObject;
+                }
+
+                return entrys;
+
+            }
+
+        }
+
+        
+
+        return null;
+    }
+
     #endregion
 
     #region Pool Objects Functions

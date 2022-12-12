@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+[RequireComponent(typeof(ObjectPool))]
 
 public class GroupManager : MonoBehaviour
 {
     [Header("Setup")]
     [Space(5)]
     [SerializeField] private GameObject _Player;
-    [SerializeField] private List<GameObject> _Prefab = new List<GameObject>();
+    [SerializeField] private GameObject[] _Prefab;
 
     [Min(1)]
     [SerializeField] private int _TotalUnitCount;
@@ -32,13 +33,14 @@ public class GroupManager : MonoBehaviour
     [SerializeField] private float _GapDistance;
     [SerializeField] private float _StopDistance;
     [SerializeField] private float _RangedDistance;
+    [SerializeField] private bool _Test;
 
     private int _WaveUnitCount;
 
     private GameObject[] _AllPooledUnits;
     private GameObject[] _CurrentActiveUnits;
 
-    
+    private ObjectPool _Pool;
 
     private Vector3 pos;
 
@@ -50,41 +52,15 @@ public class GroupManager : MonoBehaviour
 
     private void Awake()
     {
+        Innit();
         SpawnUnits();
     }
 
     private void SpawnUnits()
     {
-        _AllPooledUnits = new GameObject[_TotalUnitCount];
-        for (int i = 0; i < _TotalUnitCount; i++)
-        {
 
-            #region Randomize Spawn Point
-            if (_RandomSpawn)
-            {
-                pos = _SpawnPoint[Random.Range(0, _SpawnPoint.Count)].transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
-            }
-            else
-            {
-                pos = _SpawnPoint[0].transform.position;
-            }
-            #endregion
-  
-            #region Instantiate
-            _AllPooledUnits[i] = Instantiate(_Prefab[Random.Range(0, _Prefab.Count)], pos, Quaternion.identity);
-            if (_AllPooledUnits[i].GetComponent<Crawler>() != null)
-            {
-                _AllPooledUnits[i].GetComponent<Crawler>().SetGroupManager = this;
-            }
-            else
-            {
-                _AllPooledUnits[i].GetComponent<Cannoneer>().SetGroupManager = this;
-            }
-            #endregion
+        _Pool.PoolObject(_Prefab, gameObject, _TotalUnitCount);
 
-            _AllPooledUnits[i].SetActive(false);
-
-        }
     }
 
     public void SpawnEnemys()
@@ -96,9 +72,26 @@ public class GroupManager : MonoBehaviour
             _WaveUnitCount = _MaxWaveUnitCount;
 
         _CurrentActiveUnits = new GameObject[_WaveUnitCount];
-        
+
+        _CurrentActiveUnits = _Pool.GetAllObject(_Prefab);
+
     }
 
+    private void Innit()
+    {
+        _Pool = GetComponent<ObjectPool>();
+
+        SpawnUnits();
+    }
+
+    private void Update()
+    {
+        if (_Test)
+        {
+            SpawnEnemys();
+            _Test = false;
+        }
+    }
 
     public void ClearEnemys()
     {
@@ -109,12 +102,6 @@ public class GroupManager : MonoBehaviour
                 Destroy(_CurrentActiveUnits[i].gameObject);
             }
         }
-    }
-
-
-    private void Update()
-    {
-        
     }
 
     private void OnValidate()
