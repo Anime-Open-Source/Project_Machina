@@ -28,16 +28,12 @@ public class Grab : MonoBehaviour
     private DetectionType _CurrentDetectionType;
     private InteractionMode _InteractionMode;
 
-    private float _Range;
-    private bool _ClickGrab;
     private GameObject _GrabedObject;
     private IGrabable c_Target;
 
     private void Start()
     {
         Init();
-
-        
     }
 
     private void Update()
@@ -82,15 +78,14 @@ public class Grab : MonoBehaviour
             if (!Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out RaycastHit hit, Mathf.Infinity))
                 return;
 
-            if (!hit.collider.enabled && !hit.collider.CompareTag("grab"))
+            if (!hit.collider.enabled || !hit.collider.CompareTag("grab"))
                 return;
 
             _GrabedObject = hit.collider.gameObject;
 
             if (_GrabedObject.GetComponent<IGrabable>() != null)
                 c_Target = _GrabedObject.GetComponent<IGrabable>();
-            else
-                _GrabedObject.SetActive(false);
+
 
             Debug.Log("Click");
             _IsClicked = true;
@@ -131,15 +126,14 @@ public class Grab : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.enabled && !other.CompareTag("grab"))
+        if (!other.enabled || !other.CompareTag("grab"))
             return;
 
         _GrabedObject = other.gameObject;
 
         if (_GrabedObject.GetComponent<IGrabable>() != null)
             c_Target = _GrabedObject.GetComponent<IGrabable>();
-        else
-            _GrabedObject.SetActive(false);
+
 
         Debug.Log("Click");
         _IsClicked = true;
@@ -211,8 +205,6 @@ public class Grab : MonoBehaviour
 
         _PalmCollider.enabled = false;
 
-        _Range = _InteractionManager.Range;
-        _ClickGrab = _InteractionManager.ClickGrab;
         _IsClicked = false;
 
         ControllInit();
@@ -225,6 +217,8 @@ public class Grab : MonoBehaviour
     {
         if (!_VRJoystickAsset)
             return;
+
+        _VRJoystickAsset.Enable();
 
         _HandController = GetComponent<HandController>();
 
