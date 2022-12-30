@@ -13,6 +13,11 @@ public class SelectorButton : MonoBehaviour
         transform.localScale = new Vector3(Zoom, Zoom, Zoom);
     }
 
+    public void ResetScale()
+    {
+        transform.localScale = new Vector3(_Zoom, _Zoom, _Zoom);
+    }
+
     private void OnValidate()
     {
         Hover(_Zoom);

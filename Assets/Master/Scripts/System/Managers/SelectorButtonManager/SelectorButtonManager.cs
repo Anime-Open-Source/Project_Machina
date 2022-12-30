@@ -70,12 +70,24 @@ public class SelectorButtonManager : MonoBehaviour
             {
                 Debug.Log(c_DotProduct);
                 _SelectorButtons[i].Hover(2f);
+                continue;
             }
+
+            _SelectorButtons[i].ResetScale();
 
         }
        
 
 
+    }
+
+    private void Reset(InputAction.CallbackContext context)
+    {
+        for (int i = 0; i < _SelectorButtonPositions.Length; i++)
+        {
+            _SelectorButtons[i].ResetScale();
+
+        }
     }
 
     private void Innit()
@@ -99,9 +111,10 @@ public class SelectorButtonManager : MonoBehaviour
         }
 
         _VRJoystickAction.performed += CalculateAngle;
+        _VRJoystickAction.canceled += Reset;
     }
 
-   
+    
 
     private void OnValidate()
     {
