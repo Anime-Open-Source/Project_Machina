@@ -10,7 +10,6 @@ public class WeaponSelector : MonoBehaviour
     [Space(5)]
     [SerializeField] private Transform _ParentHandTransform;
     [SerializeField] private Transform _WeaponSpawnPoint;
-    [SerializeField] private List<GameObject> _WeaponsPrefabs = new List<GameObject>();
 
     public void SelectWeapon(GameObject WeaponName)
     {

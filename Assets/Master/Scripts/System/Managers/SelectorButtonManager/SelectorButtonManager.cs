@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class SelectorButtonManager : MonoBehaviour
 {
@@ -17,15 +18,58 @@ public class SelectorButtonManager : MonoBehaviour
 
     private Vector3[] _SelectorButtonPositions;
 
+    private SelectorButton _SelectedButton;
+
     private InputAction _VRJoystickAction;
     private float _Degrees;
+
+    Vector2 _joyStickDir;
 
     private void Awake()
     {
         Innit();
     }
 
-    private void CalculateOffsets()
+    private void Innit()
+    {
+        if (!_VRActionAssets)
+        {
+            Debug.LogError(string.Format("Cannot find Action Asset in {0}", this.name));
+            Debug.Break();
+            return;
+        }
+
+        _VRActionAssets.Enable();
+
+        _VRJoystickAction = _VRActionAssets.FindAction("JoystickMove");
+
+        if (_VRJoystickAction == null)
+        {
+            Debug.LogError(string.Format("Cannot find Action in Action Asset in {0}", this.name));
+            Debug.Break();
+            return;
+        }
+
+        _VRJoystickAction.performed += SelectWeapon;
+        _VRJoystickAction.canceled += SelectWeapon;
+    }
+
+    private void SelectWeapon(InputAction.CallbackContext context)
+    {
+
+        if (context.canceled)
+        {
+            _SelectedButton = HoverOnButton();
+            _SelectedButton.OnSelectWeapon.Invoke();
+            ResetButton();
+        }
+
+        _joyStickDir = _VRJoystickAction.ReadValue<Vector2>();
+
+        HoverOnButton();
+    }
+
+    private void CalculateButtonOffsets()
     {
         _SelectorButtonPositions = new Vector3[_SelectorButtons.Length];
 
@@ -54,67 +98,38 @@ public class SelectorButtonManager : MonoBehaviour
         }
     }
 
-    private void CalculateAngle(InputAction.CallbackContext context)
+    /// <summary>
+    /// Find Button that currently being hoverd, return that button
+    /// </summary>
+    private SelectorButton HoverOnButton()
     {
-        
-        Vector2 c_JoystickDir = context.ReadValue<Vector2>().normalized;
-        
-        float c_JoystickAngle = Vector2.SignedAngle(Vector2.up, c_JoystickDir);
-
 
         for (int i = 0; i < _SelectorButtonPositions.Length; i++)
         {
-            float c_DotProduct = Vector3.Dot(_SelectorButtonPositions[i], c_JoystickDir);
+            float c_dotProduct = Vector3.Dot(_SelectorButtonPositions[i], _joyStickDir.normalized);
 
-            if (c_DotProduct <= -0.05f)
+            if (c_dotProduct! > -0.06f)
             {
-                Debug.Log(c_DotProduct);
-                _SelectorButtons[i].Hover(2f);
+                _SelectorButtons[i].ResetScale();
                 continue;
             }
-
-            _SelectorButtons[i].ResetScale();
-
+            
+            _SelectorButtons[i].Hover(1.5f);
+            return _SelectorButtons[i];
         }
-       
 
-
+        return null;
     }
 
-    private void Reset(InputAction.CallbackContext context)
+    private void ResetButton()
     {
-        for (int i = 0; i < _SelectorButtonPositions.Length; i++)
+        for (int i = 0; i < _SelectorButtons.Length; i++)
         {
             _SelectorButtons[i].ResetScale();
-
         }
+
+        _joyStickDir = Vector2.zero;
     }
-
-    private void Innit()
-    {
-        if (!_VRActionAssets)
-        {
-            Debug.LogError(string.Format("Cannot find Action Asset in {0}", this.name));
-            Debug.Break();
-            return;
-        }
-
-        _VRActionAssets.Enable();
-
-        _VRJoystickAction = _VRActionAssets.FindAction("JoystickMove");
-        
-        if (_VRJoystickAction == null)
-        {
-            Debug.LogError(string.Format("Cannot find Action in Action Asset in {0}", this.name));
-            Debug.Break();
-            return;
-        }
-
-        _VRJoystickAction.performed += CalculateAngle;
-        _VRJoystickAction.canceled += Reset;
-    }
-
-    
 
     private void OnValidate()
     {
@@ -125,7 +140,7 @@ public class SelectorButtonManager : MonoBehaviour
         if (_Radius > _MaxRadius)
             _Radius = _MaxRadius;
 
-        CalculateOffsets();
+        CalculateButtonOffsets();
     }
 
 }

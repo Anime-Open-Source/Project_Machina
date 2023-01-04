@@ -40,18 +40,6 @@ public class ObjectPool : MonoBehaviour
 
         }
 
-        //foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
-        //{
-
-        //    Debug.Log(string.Format("Key {0}, Value {1}", entry.Key, entry.Value));
-
-        //    for (int i = 0; i < entry.Value.Count; i++)
-        //    {
-        //        Debug.Log(entry.Value[i].name);
-        //    }
-
-        //}
-
     }
     #endregion
 
@@ -69,18 +57,20 @@ public class ObjectPool : MonoBehaviour
 
         foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
         {
+
             if (entry.Key != ObjectToGet.name)
                 continue;
 
             for (int i = 0; i < entry.Value.Count; i++)
             {
-                Debug.Log(entry.Value[i].name);
 
-                if(!entry.Value[i].activeInHierarchy)
+                if (!entry.Value[i].activeInHierarchy)
                 {
                     entry.Value[i].SetActive(true);
                     return entry.Value[i];
                 }
+
+                entry.Value[i].SetActive(false);
             }
         }
 
@@ -116,6 +106,9 @@ public class ObjectPool : MonoBehaviour
                     entrys[i] = entry.Value[i].gameObject;
                     
                 }
+
+                entry.Value[i].SetActive(false);
+
             }
 
             return entrys;
@@ -147,6 +140,7 @@ public class ObjectPool : MonoBehaviour
 
                     if (entry.Value[i].activeInHierarchy)
                     {
+                        entry.Value[i].SetActive(false);
                         continue;
                     }
 

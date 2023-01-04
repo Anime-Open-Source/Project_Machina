@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SelectorButton : MonoBehaviour
 {
     [Header("Setup")]
-    [SerializeField] private GameObject _Prefab;
     [SerializeField] private float _Zoom;
+    [Header("Events")]
+    public UnityEvent OnSelectWeapon;
 
     public void Hover(float Zoom)
     {
