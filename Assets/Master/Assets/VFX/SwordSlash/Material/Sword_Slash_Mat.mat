@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SwordSlashMaterial
+  m_Name: Sword_Slash_Mat
   m_Shader: {fileID: -6465566751694194690, guid: d2fe64fc890bc9a4292f61c991efb290,
     type: 3}
   m_ValidKeywords: []

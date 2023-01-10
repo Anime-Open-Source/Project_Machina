@@ -9765,7 +9765,7 @@ GameObject:
   - component: {fileID: 1913823603022416168}
   - component: {fileID: 1913823603022416151}
   m_Layer: 0
-  m_Name: SwordSlashEffect
+  m_Name: VFX_Sword_Slash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
