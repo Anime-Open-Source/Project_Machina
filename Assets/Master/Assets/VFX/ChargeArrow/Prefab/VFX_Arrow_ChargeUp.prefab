@@ -14634,7 +14634,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4928873286122817023}
   m_Layer: 0
-  m_Name: ChargeArrow
+  m_Name: VFX_Arrow_ChargeUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
