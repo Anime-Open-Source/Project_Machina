@@ -4956,7 +4956,7 @@ GameObject:
   - component: {fileID: 7175003738913397026}
   - component: {fileID: 7175003738913397025}
   m_Layer: 0
-  m_Name: Slash
+  m_Name: VFX_Slash
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
