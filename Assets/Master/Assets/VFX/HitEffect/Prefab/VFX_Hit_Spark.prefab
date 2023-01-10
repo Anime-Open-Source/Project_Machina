@@ -4880,7 +4880,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7300614156293948177}
   m_Layer: 0
-  m_Name: HitSpark
+  m_Name: VFX_Hit_Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
