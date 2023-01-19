@@ -55,8 +55,10 @@ public class EnemyBase : MonoBehaviour, IDamageable
     public virtual void AttackTarget(GameObject Target) { }
     private void Die() 
     {
+         
         Debug.Log("Dead");
         _OnDieEvent.Invoke(transform.position);
+        gameObject.SetActive(false);
     }
 
 }

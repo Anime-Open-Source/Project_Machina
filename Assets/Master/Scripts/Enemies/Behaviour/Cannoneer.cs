@@ -115,6 +115,8 @@ public class Cannoneer : EnemyBase
             return;
 
         _Agent.isStopped = true;
+
+        _GroupManager.RemoveFromActiveUnits(this.gameObject);
     }
 
     private void OnEnable()

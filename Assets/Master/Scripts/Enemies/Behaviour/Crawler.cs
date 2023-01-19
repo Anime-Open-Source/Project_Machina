@@ -22,7 +22,7 @@ public class Crawler : EnemyBase
 
     private void Start()
     {
-        _Units = _GroupManager.Units;
+        _Units = _GroupManager.Units.ToArray();
         _Agent = GetComponent<NavMeshAgent>();
         _PlayerDirection = _GroupManager.Player.transform.position;
         _Agent.SetDestination(_PlayerDirection);
@@ -82,6 +82,7 @@ public class Crawler : EnemyBase
             return;
 
         _Agent.isStopped = true;
+        _GroupManager.RemoveFromActiveUnits(this.gameObject);
     }
 
     private void OnEnable()

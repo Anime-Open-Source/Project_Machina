@@ -118,14 +118,14 @@ public class ObjectPool : MonoBehaviour
         return null;
     }
 
-    public GameObject[] GetAllObject(GameObject[] ObjectsToGet)
+    public List<GameObject> GetAllObject(GameObject[] ObjectsToGet, int Count = 10)
     {
-        GameObject[] entrys;
+        List<GameObject> entrys = new List<GameObject>(Count);
 
         for (int a = 0;a < ObjectsToGet.Length; a++)
         {
             if (!_PooledObjects.ContainsKey(ObjectsToGet[a].name))
-                return null;
+                continue;
 
             foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
             {
@@ -133,10 +133,12 @@ public class ObjectPool : MonoBehaviour
                     continue;
 
 
-                entrys = new GameObject[entry.Value.Count];
                 for (int i = 0; i < entry.Value.Count; i++)
                 {
                     Debug.Log(entry.Value[i].name);
+
+                    if (i >= Count)
+                        continue;
 
                     if (entry.Value[i].activeInHierarchy)
                     {
@@ -145,7 +147,10 @@ public class ObjectPool : MonoBehaviour
                     }
 
                     entry.Value[i].SetActive(true);
-                    entrys[i] = entry.Value[i].gameObject;
+
+                   
+
+                    entrys.Add(entry.Value[i].gameObject);
                 }
 
                 return entrys;
