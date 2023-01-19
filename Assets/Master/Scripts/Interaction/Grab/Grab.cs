@@ -10,15 +10,16 @@ using System;
 public class Grab : MonoBehaviour
 {
     [Header("Setup")]
-    [Space(2)]
+    [Space(10)]
+
     [SerializeField] private InputActionAsset _VRJoystickAsset;
     [SerializeField] private InteractionManager _InteractionManager;
     [SerializeField] private Animator _Animator;
     [SerializeField] private GameObject _Palm;
     [SerializeField] private Collider _PalmCollider;
-    [Space(5)]
-    [SerializeField] private bool _IsHolding;
-    [SerializeField] private bool _IsClicked;
+    
+    private bool _IsHolding;
+    private bool _IsClicked;
 
     HandController _HandController;
 
@@ -186,7 +187,6 @@ public class Grab : MonoBehaviour
     #endregion
 
     #endregion
-
 
     #region System Init
 
