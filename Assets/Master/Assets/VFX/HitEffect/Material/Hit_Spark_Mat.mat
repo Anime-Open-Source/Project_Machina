@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Hit_Spark_Mat
-  m_Shader: {fileID: -6465566751694194690, guid: 70061793bee857a48a1dd9d289446b40,
+  m_Shader: {fileID: -6465566751694194690, guid: 026fb8bdc7bb67b45b6f937b7e8e8224,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
