@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Circle_Mat
-  m_Shader: {fileID: -6465566751694194690, guid: 978db850253cd0141a754d46716892d4,
+  m_Shader: {fileID: -6465566751694194690, guid: 825db5f007b0a6141b9fa03d71e033a4,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -83,6 +83,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
+        m_Texture: {fileID: 2800000, guid: f5bd76f59474a064c9c5f3538dafc0bd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
         m_Texture: {fileID: 2800000, guid: f5bd76f59474a064c9c5f3538dafc0bd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}

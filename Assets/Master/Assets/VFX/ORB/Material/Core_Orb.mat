@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Core_Orb
-  m_Shader: {fileID: -6465566751694194690, guid: c5659177a383ad74fa07b7e0ae6f3b1f,
+  m_Shader: {fileID: -6465566751694194690, guid: 825db5f007b0a6141b9fa03d71e033a4,
     type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -66,6 +66,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture:
+        m_Texture: {fileID: 2800000, guid: f8cc0d7d7e0ac0a418f9a62c2342d23f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2D:
         m_Texture: {fileID: 2800000, guid: f8cc0d7d7e0ac0a418f9a62c2342d23f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
