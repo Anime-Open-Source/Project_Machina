@@ -26,7 +26,7 @@ public class BowStringVisual : MonoBehaviour
 
     public Transform PullPoint{ get { return _PullPoint; } private set { } }
     public float PullPower { get { return _PullPower; } private set { } }
-
+    public Transform CenterPoint { get { return _CenterPoint; } private set { } }
 
     private void Start()
     {

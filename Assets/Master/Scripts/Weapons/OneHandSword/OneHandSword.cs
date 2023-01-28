@@ -15,12 +15,6 @@ public class OneHandSword : WeaponBase
     [SerializeField]private Vector3 _Offsets;
 
     private Vector3 _PreviosPos;
-
-    private void Start()
-    {
-        p_ForwardCorrectionOffsets = _Offsets;
-    }
-
     private void Update()
     {
         WeaponMovement();

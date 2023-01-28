@@ -6,6 +6,7 @@ public class Bow : WeaponBase
 {
     [Space(10)]
     [SerializeField] private Transform _ProjectileSpawnPoint;
+    [SerializeField] private GameObject _ProjectilePrefab;
 
     [Header("Setting")]
     [SerializeField] private float _MinimalPull;
@@ -25,7 +26,7 @@ public class Bow : WeaponBase
         Vector3 c_GroundForward = new Vector3(c_Forward.x, transform.position.y, c_Forward.z);
         float c_LaunchAngle = Vector3.Angle(c_Forward, c_GroundForward);
 
-        _PojectileObject = ProjectileManager.Instance.GetProjectile(transform);
+        _PojectileObject = ProjectileManager.Instance.GetProjectile(transform, _ProjectilePrefab);
 
         _Projectile = _PojectileObject.GetComponent<Projectile>();
         _Projectile.AssignParameter(LaunchPower * _Multiplier, c_LaunchAngle);
