@@ -1,65 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+[RequireComponent(typeof(ObjectPool))]
 
 public class WeaponManager : SingletonGeneric<WeaponManager>
 {
     [Header("Lists")]
     [Space(10)]
-    [SerializeField] private List<GameObject> WeaponPrefabs = new List<GameObject>();
-    
-    
-    private GameObject[] _PooledWeapons;
+    [SerializeField] private GameObject[] WeaponsPrefabs;
+    [Header("Setup")]
+    [SerializeField] private GameObject _WeaponsParent;
+    [Header("Settings")]
+    [SerializeField] private int _PoolCount;
+
+    private ObjectPool _Pool;
+
 
 
     private void Start()
     {
-        SpawnWeapon();
+        _Pool = GetComponent<ObjectPool>();
+        _Pool.PoolObject(WeaponsPrefabs, _WeaponsParent, _PoolCount);
     }
 
-    #region Spawn Weapon
-    private void SpawnWeapon()
+    public GameObject GetWeapons(GameObject WeaponPrefab, Transform Caller)
     {
-        int c_ArrayLength = WeaponPrefabs.Count;
-        _PooledWeapons = new GameObject[c_ArrayLength];
-
         GameObject c_Weapon;
+        c_Weapon = _Pool.GetObject(WeaponPrefab);
 
-        for (int i = 0; i < WeaponPrefabs.Count; i++)
-        {
-            c_Weapon = Instantiate(WeaponPrefabs[i], transform.position, transform.rotation);
-            c_Weapon.SetActive(false);
-            _PooledWeapons[i] = c_Weapon;
-        }
+        if (!c_Weapon)
+            return null;
 
-    }
-    #endregion
+        c_Weapon.transform.position = Caller.transform.position;
+        c_Weapon.transform.rotation = Caller.transform.rotation;
 
-    private void Clear()
-    {
-        for (int i = 0; i < _PooledWeapons.Length; i++)
-        {
-            _PooledWeapons[i].SetActive(false);
-
-        }
-    }
-
-    public GameObject GetWeapons(GameObject WeaponsPrefabs)
-    {
-
-        Clear();
-
-        for (int i = 0; i < _PooledWeapons.Length; i++)
-        {
-            if (!_PooledWeapons[i].activeInHierarchy && WeaponPrefabs[i] == WeaponsPrefabs)
-            {
-                _PooledWeapons[i].SetActive(true);
-                return _PooledWeapons[i];
-            }
-
-        }
-
-        return null;
+        return c_Weapon;
 
     }
 }

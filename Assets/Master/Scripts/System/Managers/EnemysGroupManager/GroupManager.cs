@@ -1,18 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+[RequireComponent(typeof(ObjectPool))]
 
 public class GroupManager : MonoBehaviour
 {
     [Header("Setup")]
     [Space(5)]
     [SerializeField] private GameObject _Player;
-    [SerializeField] private List<GameObject> _Prefab = new List<GameObject>();
+    [SerializeField] private GameObject[] _Prefabs;
 
     [Min(1)]
     [SerializeField] private int _TotalUnitCount;
 
-    [SerializeField] private List<GameObject> _SpawnPoint = new List<GameObject>();
+    [SerializeField] private List<GameObject> _SpawnPoints = new List<GameObject>();
+    [Space(5)]
+    [Header("Events")]
+    [Space(5)]
+    public UnityEvent OnActiveUniteEmptyEvent;
     [Space(5)]
     [Header("Setting")]
     [Space(5)]
@@ -31,63 +38,50 @@ public class GroupManager : MonoBehaviour
     [SerializeField] private Vector3 _SpawnArea;
     [SerializeField] private float _GapDistance;
     [SerializeField] private float _StopDistance;
-    [SerializeField] private float _RangedDistance;
+    [SerializeField] private float _RangedAttackDistance;
+    [SerializeField] private bool _Test;
 
     private int _WaveUnitCount;
 
-    private GameObject[] _AllPooledUnits;
-    private GameObject[] _CurrentActiveUnits;
+    private List<GameObject> _ActiveUnits = new List<GameObject>();
 
-    
-
-    private Vector3 pos;
+    private ObjectPool _Pool;
 
     public GameObject Player { get { return _Player; } }
-    public GameObject[] Units { get { return _CurrentActiveUnits; } }
+    public List<GameObject> Units { get { return _ActiveUnits; } }
     public float GapDistance { get { return _GapDistance; } private set { } }
     public float StopDistance { get { return _StopDistance; } private set { } }
-    public float RangedDistance { get { return _RangedDistance; } private set { } }
+    public float RangedDistance { get { return _RangedAttackDistance; } private set { } }
+
+
+    public void RemoveFromActiveUnits(GameObject enemyGameObject)
+    {
+        if (_ActiveUnits.Count <= 0)
+            return;
+
+       _ActiveUnits.Remove(enemyGameObject);
+
+    }
+
+    private void OnActiveUnitsEmpty()
+    {
+
+    }
 
     private void Awake()
     {
-        SpawnUnits();
+        Innit();
+        PoolUnits();
     }
 
-    private void SpawnUnits()
+    private void PoolUnits()
     {
-        _AllPooledUnits = new GameObject[_TotalUnitCount];
-        for (int i = 0; i < _TotalUnitCount; i++)
-        {
 
-            #region Randomize Spawn Point
-            if (_RandomSpawn)
-            {
-                pos = _SpawnPoint[Random.Range(0, _SpawnPoint.Count)].transform.position + new Vector3(Random.Range(-_SpawnArea.x, _SpawnArea.x), transform.position.y, Random.Range(-_SpawnArea.z, _SpawnArea.z));
-            }
-            else
-            {
-                pos = _SpawnPoint[0].transform.position;
-            }
-            #endregion
-  
-            #region Instantiate
-            _AllPooledUnits[i] = Instantiate(_Prefab[Random.Range(0, _Prefab.Count)], pos, Quaternion.identity);
-            if (_AllPooledUnits[i].GetComponent<Crawler>() != null)
-            {
-                _AllPooledUnits[i].GetComponent<Crawler>().SetGroupManager = this;
-            }
-            else
-            {
-                _AllPooledUnits[i].GetComponent<Cannoneer>().SetGroupManager = this;
-            }
-            #endregion
+        _Pool.PoolObject(_Prefabs, gameObject, _TotalUnitCount);
 
-            _AllPooledUnits[i].SetActive(false);
-
-        }
     }
 
-    public void SpawnEnemys()
+    public void SetActiveEnemys()
     {
 
         if (_RandomWaveUnitCount)
@@ -95,26 +89,63 @@ public class GroupManager : MonoBehaviour
         else
             _WaveUnitCount = _MaxWaveUnitCount;
 
-        _CurrentActiveUnits = new GameObject[_WaveUnitCount];
-        
+        _ActiveUnits = _Pool.GetAllObject(_Prefabs, _WaveUnitCount);
+
+        for (int i = 0; i < _ActiveUnits.Count; i++)
+        {
+            if (!_ActiveUnits[i].GetComponent<Crawler>())
+            {
+                _ActiveUnits[i].GetComponent<Cannoneer>().SetGroupManager = this;
+                continue;
+            }
+
+            _ActiveUnits[i].GetComponent<Crawler>().SetGroupManager = this;
+
+        }
+
+        SpawnUnit();
+
+
     }
 
-
-    public void ClearEnemys()
+    private void SpawnUnit()
     {
-        if (_CurrentActiveUnits.Length < 0)
+        for (int i = 0; i < _ActiveUnits.Count; i++)
         {
-            for (int i = 0; i < _CurrentActiveUnits.Length; i++)
-            {
-                Destroy(_CurrentActiveUnits[i].gameObject);
-            }
+            _ActiveUnits[i].transform.position = _SpawnPoints[Random.Range(0, _SpawnPoints.Count)].transform.position;
+            _ActiveUnits[i].SetActive(true);
         }
     }
 
+    private void Innit()
+    {
+        _Pool = GetComponent<ObjectPool>();
 
+        PoolUnits();
+    }
+
+
+
+    //Delete after development
     private void Update()
     {
-        
+        if (_Test)
+        {
+            SetActiveEnemys();
+            _Test = false;
+        }
+    }
+
+    public void ClearEnemys()
+    {
+        if (_ActiveUnits.Count <= 0)
+            return;
+
+        for (int i = 0; i < _ActiveUnits.Count; i++)
+        {
+            _ActiveUnits[i].gameObject.SetActive(false);
+            _ActiveUnits.Remove(_ActiveUnits[i]);
+        }
     }
 
     private void OnValidate()

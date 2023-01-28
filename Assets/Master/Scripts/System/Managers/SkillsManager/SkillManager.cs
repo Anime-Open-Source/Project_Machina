@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SkillManager : MonoBehaviour
+public class SkillManager : SingletonGeneric<SkillManager>
 {
     [Header("Config")]
-    [Tooltip("Used this button to check if function work correctly")]
-    [SerializeField] private bool _Activate;
     [SerializeField] private SkillBase _TestSkill;
 
 
@@ -17,19 +15,12 @@ public class SkillManager : MonoBehaviour
 
     #region Private Function;
 
-    //Make singleton?
-
     private void Update()
     {
 
-        if (_Activate)
-        {
-            ChangeSkill(_TestSkill, gameObject);
-        }
-
         if (_CurrentSkill != null)
         {
-            if (_CurrentSkillTime >= _CurrentSkill.SkillTime)
+            if (_CurrentSkillTime >= _CurrentSkill.SkillActiveTime)
             {
                 Clear();
                 return;
@@ -60,7 +51,7 @@ public class SkillManager : MonoBehaviour
             return;
 
         if (_CurrentSkill != null)
-            _CurrentSkill.Stop(Sender);
+            _CurrentSkill.Stop(_Sender);
 
         _Sender = Sender;
         _CurrentSkill = NextSkill;

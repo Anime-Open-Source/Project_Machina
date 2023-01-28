@@ -25,7 +25,8 @@ public class GrabPointBase : MonoBehaviour, IGrabable
     [SerializeField] private Collider _DetectionCollider;
     [SerializeField] private Transform _HandTransform;
 
-
+    [Header("Events")]
+    [Space(10)]
     public UnityEvent<Transform> OnGrabEvent;
     public UnityEvent<Transform> OnDetachedEvent;
 

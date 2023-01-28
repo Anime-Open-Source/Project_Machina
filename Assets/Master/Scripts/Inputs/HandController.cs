@@ -19,6 +19,8 @@ public class HandController : MonoBehaviour
     InputActionMap _controllerInputMap;
     InputAction _triggerActions;
 
+    public HandOrientation handOrientation { get { return m_handOrientation; } private set { } }
+
 #if UNITY_EDITOR
     [Header("Debugging")]
     [SerializeField] private bool m_debugMode = false;
@@ -109,4 +111,5 @@ public class HandController : MonoBehaviour
 
         return true;
     }
+
 }

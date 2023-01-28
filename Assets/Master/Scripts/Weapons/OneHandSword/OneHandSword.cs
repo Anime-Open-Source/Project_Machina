@@ -16,17 +16,14 @@ public class OneHandSword : WeaponBase
 
     private Vector3 _PreviosPos;
 
-
-
-
+    private void Start()
+    {
+        p_ForwardCorrectionOffsets = _Offsets;
+    }
 
     private void Update()
     {
-        if (PrimaryHandTransform != null)
-        {
-            transform.position = PrimaryHandTransform.position;
-            transform.up = PrimaryHandTransform.forward;
-        }
+        WeaponMovement();
 
         if (CalculateSwingSpeed())
             _BladeCollider.enabled = true;
@@ -40,6 +37,8 @@ public class OneHandSword : WeaponBase
         float SwingSpeed;
         SwingSpeed = ((transform.position - _PreviosPos).magnitude / Time.deltaTime);
         _PreviosPos = transform.position;
+
+        Debug.Log(SwingSpeed);
 
         return SwingSpeed > _MinimalSwingSpeed;
 
