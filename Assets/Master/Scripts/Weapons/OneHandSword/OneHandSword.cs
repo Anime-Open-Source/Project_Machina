@@ -18,7 +18,7 @@ public class OneHandSword : WeaponBase
 
     private void Start()
     {
-        p_ForwardCorrectionOffsets = _Offsets;
+        //p_ForwardCorrectionOffsets = _Offsets;
     }
 
     private void Update()
