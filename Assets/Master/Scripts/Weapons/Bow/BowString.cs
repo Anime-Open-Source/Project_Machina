@@ -74,7 +74,8 @@ public class BowString : MonoBehaviour
 
     public void OnDetached(Transform GrabTransform)
     {
-        _Visualizer.PullPoint.position = _Visualizer.CenterPoint.position;
+        // TODO : [MERGE CENTER POINT]
+        //_Visualizer.PullPoint.position = _Visualizer.CenterPoint.position;
         _IsGrabbed = false;
         _ParentBow.Shoot(_Visualizer.PullPower);
     }
