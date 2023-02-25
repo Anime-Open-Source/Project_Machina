@@ -9,5 +9,6 @@ public class LoadMap : MonoBehaviour
     private void Start()
     {
         SceneManager.LoadSceneAsync(sceneName:_sceneName, LoadSceneMode.Additive);
+        SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
     }
 }

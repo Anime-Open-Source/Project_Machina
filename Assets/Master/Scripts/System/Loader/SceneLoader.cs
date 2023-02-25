@@ -36,7 +36,7 @@ public class SceneLoader : MonoBehaviour
             }
             yield return null;
         }
-        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+        //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         UnloadScene(SceneManager.GetSceneByBuildIndex(0));
 
 
