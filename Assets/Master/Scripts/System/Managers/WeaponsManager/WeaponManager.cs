@@ -23,8 +23,15 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         _Pool.PoolObject(WeaponsPrefabs, _WeaponsParent, _PoolCount);
     }
 
-    public GameObject GetWeapons(GameObject WeaponPrefab, Transform Caller)
+    public GameObject GetWeaponsGameobject(GameObject WeaponPrefab, Transform Caller)
     {
+        foreach (GameObject weapon in WeaponsPrefabs)
+        {
+            if(weapon.name != WeaponPrefab.name)
+                _Pool.DisableObject(weapon);
+        }
+        
+
         GameObject c_Weapon;
         c_Weapon = _Pool.GetObject(WeaponPrefab);
 
@@ -37,5 +44,13 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
         return c_Weapon;
 
     }
+
+    public void GetWeapons(Transform Caller)
+    {
+        //Debug.Log("Called");
+        GameObject c_WeaponToCall = Caller.GetComponent<SelectorButton>().GetWeaponPrefab;
+        GetWeaponsGameobject(c_WeaponToCall, Caller);
+    }
+
 }
 
