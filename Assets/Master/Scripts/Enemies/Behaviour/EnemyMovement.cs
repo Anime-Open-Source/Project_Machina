@@ -7,7 +7,9 @@ using UnityEngine.AI;
 
 public class EnemyMovement : MonoBehaviour
 {
+
     [SerializeField] private EnemyBase m_enemyBase;
+    [SerializeField] private Animator m_animator;
 
     //Retreat distance for range unit
     private float _retreateDistance;
@@ -17,6 +19,8 @@ public class EnemyMovement : MonoBehaviour
     private Transform _playerTransfrom;
 
     private NavMeshAgent _navMeshAgent;
+
+    private bool _isRetreat;
 
     private void Start()
     {
@@ -28,42 +32,77 @@ public class EnemyMovement : MonoBehaviour
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
 
-        _retreateDistance = m_enemyBase.MGroupManager.RangedDistance / 2f;
-
-        _stopDistance = m_enemyBase.MGroupManager.StopDistance;
-
         _playerTransfrom = m_enemyBase.MGroupManager.Player.transform;
 
-        _navMeshAgent.destination = _playerTransfrom.position;
+        _navMeshAgent.SetDestination(_playerTransfrom.position);
+
+        switch (m_enemyBase.Type)
+        {
+            case EnemyBase.UnitType.None:
+                break;
+            case EnemyBase.UnitType.Ranged:
+                _retreateDistance = m_enemyBase.MGroupManager.RangedDistance / 2f;
+                _stopDistance = m_enemyBase.MGroupManager.RangedDistance;
+                break;
+            case EnemyBase.UnitType.Melee:
+                _retreateDistance = 0f;
+                _stopDistance = m_enemyBase.MGroupManager.StopDistance;
+                break;
+            default:
+                break;
+        }
+
+       
+
+        
+
+        
     }
 
     private void Update()
     {
-        if(m_enemyBase.Type == EnemyBase.UnitType.Ranged)
+
+
+        if (!_navMeshAgent.isStopped)
         {
-
-            RetreatAtDistance(_retreateDistance);
-            return;
-
+            m_animator.SetBool("IsWalking", true);
+        }
+        
+        if(Vector3.Distance(transform.position, _playerTransfrom.position) > _stopDistance)
+        {
+            _navMeshAgent.isStopped = false;
+            _navMeshAgent.SetDestination(_playerTransfrom.position);
         }
             
+
+        RetreatAtDistance(_retreateDistance);
+
+        if (_isRetreat)
+            return;
+
+        
         StopAtDistance(_stopDistance);
 
     }
 
     private void RetreatAtDistance(float distance)
     {
-        if(Vector3.Distance(transform.position, _playerTransfrom.position) > distance * 2f)
+
+        if (Vector3.Distance(transform.position, _playerTransfrom.position) >= distance * 2)
         {
+            _isRetreat = false;
             return;
         }
 
-        if (Vector3.Distance(transform.position, _playerTransfrom.position) > distance)
+        if (Vector3.Distance(transform.position, _playerTransfrom.position) >= distance)
             return;
 
-        _navMeshAgent.isStopped = false;
+        
+            
 
-        _navMeshAgent.destination = transform.position + (transform.position - _playerTransfrom.position);
+        _navMeshAgent.isStopped = false;
+        _isRetreat = true;
+        _navMeshAgent.SetDestination(transform.position + (transform.position - transform.forward));
 
     }
     private void StopAtDistance(float distance)
@@ -72,6 +111,25 @@ public class EnemyMovement : MonoBehaviour
             return;
 
         _navMeshAgent.isStopped = true;
+        m_animator.SetBool("IsWalking", false);
+    }
+
+    private void OnDisable()
+    {
+        if (!_navMeshAgent)
+            return;
+
+        _navMeshAgent.isStopped = true;
+    }
+
+    private void OnEnable()
+    {
+
+        if (!_navMeshAgent)
+            return;
+
+        _navMeshAgent.isStopped = false;
+
     }
 
 }
