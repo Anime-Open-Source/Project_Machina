@@ -21,30 +21,30 @@ public class SwordBladeBase : MonoBehaviour
             return;
 
 
-        if (other.transform.parent != null)
-        {
-            if (other.transform.parent.GetComponent<IDamageable>() != null)
-            {
-                _OnHitEvent.Invoke(other.transform.parent.GetComponent<IDamageable>());
-                _Material.material.color = Color.green;
-                _CanHit = false;
-            }
-        }
-        else
-        {
+        //if (other.transform.parent != null)
+        //{
+        //    if (other.transform.parent.GetComponent<IDamageable>() != null)
+        //    {
+        //        _OnHitEvent.Invoke(other.transform.parent.GetComponent<IDamageable>());
+        //        //_Material.material.color = Color.green;
+        //        _CanHit = false;
+        //    }
+        //}
+        //else
+        //{
             if (other.GetComponent<IDamageable>() != null)
             {
                 _OnHitEvent.Invoke(other.GetComponent<IDamageable>());
-                _Material.material.color = Color.green;
+                //_Material.material.color = Color.green;
                 _CanHit = false;
             }
-        }
+        //}
     }
 
     private void OnTriggerExit(Collider other)
     {
         Debug.Log("Out");
-        _Material.material.color = Color.red;
+        //_Material.material.color = Color.red;
         _CanHit = true;
     }
 
