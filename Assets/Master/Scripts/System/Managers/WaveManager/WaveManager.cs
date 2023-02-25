@@ -15,12 +15,23 @@ public class WaveManager : SingletonGeneric<WaveManager>
     [SerializeField] private int _MinWaveNumber;
     [SerializeField] private int _MaxWaveNumber;
 
+    public bool testButton;
+
     private bool _IsStarted;
 
-    public int CurrentWaveNumber { get { return _MinWaveNumber; } private set { } }
+    public int CurrentWaveNumber { get { return _CurrentWaveNumber; } private set { } }
 
     private int _CurrentWaveNumber;
 
+    private void Update()
+    {
+        if (testButton)
+        {
+            WaveEnd();
+            testButton = false;
+        }
+            
+    }
 
     public void WaveStart()
     {
