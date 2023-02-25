@@ -8,7 +8,8 @@ public class ObjectPool : MonoBehaviour
 
     private Dictionary<string, List<GameObject>> _PooledObjects = new Dictionary<string, List<GameObject>>();
 
-    private List<GameObject> c_PooledObjectList = new List<GameObject>();
+    private List<GameObject> c_PooledObjectList;
+    private GameObject c_Object;
 
     #region Spawn Object Functions
 
@@ -29,7 +30,8 @@ public class ObjectPool : MonoBehaviour
 
             if (!_PooledObjects.ContainsKey(ObjectToPool.name))
             {
-                c_PooledObjectList.Clear();
+                c_PooledObjectList = new List<GameObject>();
+                //c_PooledObjectList.Clear();
                 c_PooledObjectList.Add(c_Object);
                 _PooledObjects.Add(ObjectToPool.name, c_PooledObjectList);
                 continue;
