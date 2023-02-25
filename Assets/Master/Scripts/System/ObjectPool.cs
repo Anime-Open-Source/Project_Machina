@@ -79,6 +79,31 @@ public class ObjectPool : MonoBehaviour
         return null;
     }
 
+    public void DisableObject(GameObject ObjectToDisable)
+    {
+        if (!_PooledObjects.ContainsKey(ObjectToDisable.name))
+            return;
+
+        foreach (KeyValuePair<string, List<GameObject>> entry in _PooledObjects)
+        {
+
+            if (entry.Key != ObjectToDisable.name)
+                continue;
+
+            for (int i = 0; i < entry.Value.Count; i++)
+            {
+
+                if (entry.Value[i].activeInHierarchy)
+                {
+                    entry.Value[i].SetActive(false);
+                }
+
+            }
+        }
+
+        return;
+    }
+
     /// <summary>
     /// Return All of the Pooled Object of the Specified Type
     /// </summary>
