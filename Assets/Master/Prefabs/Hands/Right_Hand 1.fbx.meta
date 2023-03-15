@@ -1,8 +1,11 @@
 fileFormatVersion: 2
-guid: b58d5ba83ee696c4fb50f9aea9d99926
+guid: 06bfade1b9b0efa43850fb0fd66c0eee
 ModelImporter:
   serializedVersion: 21300
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      74: -2316812859585743992
+    second: RightArmature|RightAnimation
   externalObjects: {}
   materials:
     materialImportMode: 2
