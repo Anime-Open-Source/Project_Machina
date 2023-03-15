@@ -145,8 +145,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.06, y: 1.06, z: 2.56}
-  m_Center: {x: 0, y: 0.46, z: -0.48}
+  m_Size: {x: 1.84, y: 1.56, z: 2.56}
+  m_Center: {x: 0, y: 0.5, z: -0.48}
 --- !u!54 &8225079195072857172
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -631,6 +631,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5604619924040802773}
+        m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!4 &6734585625044437467 stripped
 Transform:
