@@ -36,6 +36,8 @@ public class EnemyMovement : MonoBehaviour
 
         _navMeshAgent.SetDestination(_playerTransfrom.position);
 
+        _navMeshAgent.speed = m_enemyBase.Stats.MovementSpeed;
+
         switch (m_enemyBase.Type)
         {
             case EnemyBase.UnitType.None:
@@ -61,6 +63,12 @@ public class EnemyMovement : MonoBehaviour
 
     private void Update()
     {
+
+        if (m_animator.GetBool("IsDead"))
+        {
+            _navMeshAgent.isStopped = true;
+            return;
+        }
 
 
         if (!_navMeshAgent.isStopped)

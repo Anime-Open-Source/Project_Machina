@@ -6,8 +6,7 @@ using UnityEngine.AI;
 
 public class Crawler : EnemyBase
 {
-    private GroupManager _GroupManager;
-    private Vector3 _PlayerDirection;
+    private GameObject _Player;
     private GameObject[] _Units;
     private Vector3 _Total;
     private Vector3 _Center;
@@ -16,42 +15,39 @@ public class Crawler : EnemyBase
 
     private float _ColldownTime;
 
+    private float _CurrentTime;
+
     private bool _CanAttack = true;
 
-    public GroupManager SetGroupManager { get { return _GroupManager; } set { _GroupManager = value; } }
-
-    private void Start()
+    public override void Init()
     {
-        _Units = _GroupManager.Units.ToArray();
+        _Units = MGroupManager.Units.ToArray();
         _Agent = GetComponent<NavMeshAgent>();
-        _PlayerDirection = _GroupManager.Player.transform.position;
-        _Agent.SetDestination(_PlayerDirection);
+        _Player = MGroupManager.Player;
+        _ColldownTime = Stats.AttackSpeed;
+        GetComponent<Collider>().enabled = true;
     }
 
     private void Update()
     {
-        
-        if (Vector3.Distance(transform.position, _PlayerDirection) <= _GroupManager.StopDistance)
+
+        if (_CurrentTime <= 0f)
+            _CanAttack = true;
+
+        if(!EnemyAudioSource.isPlaying)
+            EnemyAudioSource.Play();
+
+        if (!_Agent.isStopped)
+            return;
+
+        if (!_CanAttack)
         {
-            _Agent.isStopped = true;
-
-            _ColldownTime += Time.deltaTime;
-
-            if (_CanAttack)
-            {
-                AttackTarget(_GroupManager.Player);
-                _CanAttack = false;
-                _ColldownTime = 0;
-            }
-
-            if (_ColldownTime >= 3f)
-            {
-                _CanAttack = true;
-            }
+            _CurrentTime -= Time.deltaTime;
+            return;
         }
 
-
-        
+        AttackTarget(_Player);
+        _CurrentTime = _ColldownTime;
 
     }
 
@@ -65,7 +61,7 @@ public class Crawler : EnemyBase
         _Center = _Total / _Units.Length;
 
         _Offests = _Center - transform.position;
-        _PlayerDirection += _Offests;
+        _Player.transform.position += _Offests;
    
 
     }
@@ -73,26 +69,11 @@ public class Crawler : EnemyBase
     public override void AttackTarget(GameObject Target)
     {
         Target.GetComponent<IDamageable>().DoDamage(Stats.Damage, Stats.Piercing);
+        EnemyAnimator.SetTrigger("Attack");
+        _CanAttack = false;
     }
 
 
-    private void OnDisable()
-    {
-        if (!_Agent)
-            return;
-
-        _Agent.isStopped = true;
-        _GroupManager.RemoveFromActiveUnits(this.gameObject);
-    }
-
-    private void OnEnable()
-    {
-
-        if (!_Agent)
-            return;
-
-        _Agent.isStopped = false;
-        _Agent.SetDestination(_PlayerDirection);
-    }
+    
 
 }

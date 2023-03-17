@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
+
 [RequireComponent(typeof(NavMeshAgent))]
 
 public class Cannoneer : EnemyBase
@@ -11,40 +13,50 @@ public class Cannoneer : EnemyBase
     [SerializeField] private Transform _ProjectileSpawnPoint;
     [SerializeField] private GameObject _ProjectilePrefab;
     [Header("Settings")]
+    [SerializeField] private float _CooldownTime;
     [SerializeField] private float _LaunchPower;
     [SerializeField] private float _LaunchHeight;
     [SerializeField] private float _LaunchAngel;
+    [Header("Events")]
+    [Space(5)]
+    public UnityEvent OnEnemyShoot;
 
-    private GroupManager _GroupManager;
+    private float _CurrentTime;
 
     private Transform _Target;
 
     private NavMeshAgent _Agent;
 
     private float _RangedDistance;
-    private float _RetreateDistance;
 
     private bool _CanShoot;
 
     private GameObject _ProjectileObject;
     private Projectile _Projectile;
 
-    public GroupManager SetGroupManager { get { return _GroupManager; } set { _GroupManager = value; } }
-
-    private void Start()
-    {
-       Init();
-    }
-
     private void Update()
     {
-        Movement();
+
+        if (!IsInRange())
+            return;
 
         if (_CanShoot)
         {
             ShootTarget(_Target);
+            _CanShoot = false;
         }
 
+        if (_CurrentTime > 0f)
+        {
+            _CurrentTime -= Time.deltaTime;
+            return;
+        }
+
+        if (!_Agent.isStopped)
+            return;
+
+        _CanShoot = true;
+        _CurrentTime = _CooldownTime;
 
     }
 
@@ -53,7 +65,18 @@ public class Cannoneer : EnemyBase
 
         LockAtTarget(Target);
 
+        EnemyAnimator.SetTrigger("Attack");
+
+        Target.gameObject.GetComponent<Player>().DoDamage(Stats.Damage, Stats.Piercing);
+
+        _CurrentTime = _CooldownTime;
+    }
+
+    public void SpawnProjectile()
+    {
         _ProjectileObject = ProjectileManager.Instance.GetProjectile(transform, _ProjectilePrefab);
+        _ProjectileObject.transform.position = _ProjectileSpawnPoint.position;
+
         _Projectile = _ProjectileObject.GetComponent<Projectile>();
 
         _Projectile.AssignParameter(_LaunchPower, _LaunchAngel);
@@ -70,28 +93,6 @@ public class Cannoneer : EnemyBase
 
     }
 
-
-    private void Movement()
-    {
-        _Agent.SetDestination(_Target.position);
-
-        if (IsInRange())
-        {
-            _Agent.isStopped = true;
-            _CanShoot = true;
-            return;
-        }
-
-        _CanShoot = false;
-
-        if (Vector3.Distance(transform.position, _Target.position) <= _RetreateDistance)
-        {
-            _Agent.isStopped = false;
-            _Agent.SetDestination(_GroupManager.transform.position);
-            return;
-        }
-    }
-
     private bool IsInRange()
     {
         if (Vector3.Distance(transform.position, _Target.position) <= _RangedDistance)
@@ -100,13 +101,13 @@ public class Cannoneer : EnemyBase
         return false;
     }
 
-    private void Init()
+    public override void Init()
     {
         _Agent = GetComponent<NavMeshAgent>();
-        _Target = _GroupManager.Player.transform;
-        _RangedDistance = _GroupManager.RangedDistance;
-        _Agent.SetDestination(_Target.position);
-        _RetreateDistance = _RangedDistance / 2;
+        _Target = MGroupManager.Player.transform;
+        _RangedDistance = MGroupManager.RangedDistance;
+        _CooldownTime = Stats.AttackSpeed;
+        GetComponent<Collider>().enabled = true;
     }
 
     private void OnDisable()
@@ -116,7 +117,7 @@ public class Cannoneer : EnemyBase
 
         _Agent.isStopped = true;
 
-        _GroupManager.RemoveFromActiveUnits(this.gameObject);
+        //MGroupManager.RemoveFromActiveUnits(this.gameObject);
     }
 
     private void OnEnable()
