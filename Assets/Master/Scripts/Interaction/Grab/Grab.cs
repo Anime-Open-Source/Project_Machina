@@ -17,7 +17,10 @@ public class Grab : MonoBehaviour
     [SerializeField] private Animator _Animator;
     [SerializeField] private GameObject _Palm;
     [SerializeField] private Collider _PalmCollider;
-    
+
+    [Space(10)]
+    public UnityEvent OnGrab;
+
     private bool _IsHolding;
     private bool _IsClicked;
 
@@ -31,6 +34,11 @@ public class Grab : MonoBehaviour
 
     private GameObject _GrabedObject;
     private IGrabable c_Target;
+
+    public GameObject GetGrabedeObject()
+    {
+        return _GrabedObject;
+    }
 
     private void Start()
     {
@@ -151,6 +159,7 @@ public class Grab : MonoBehaviour
     private void GrabItem(IGrabable Target)
     {
         Debug.Log(string.Format("Attached to : {0}", this.name));
+        OnGrab.Invoke();
         _IsHolding = true;
         Target.Grabed(_Palm);
     }
@@ -298,6 +307,24 @@ public class Grab : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    public void ChangeInteractionType(InteractionMode interactionMode)
+    {
+        if (_InteractionMode.Equals(InteractionMode.Hold))
+        {
+            _InteractionMode = interactionMode;
+            return;
+        }
+
+        if (_IsHolding)
+        {
+
+            return;
+        }
+            
+
+        _InteractionMode = interactionMode;
     }
 
     private void OnDrawGizmos()
