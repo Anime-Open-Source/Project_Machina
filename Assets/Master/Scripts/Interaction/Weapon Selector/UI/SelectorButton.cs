@@ -23,7 +23,7 @@ public class SelectorButton : MonoBehaviour
 
     public void Hover(float Zoom)
     {
-        transform.localPosition += ZoomedPos;
+        transform.localPosition = c_originalPos + ZoomedPos;
         transform.localScale = new Vector3(_Zoom, Zoom, _Zoom);
     }
 
