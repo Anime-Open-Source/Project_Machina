@@ -8,11 +8,14 @@ public class SelectorButton : MonoBehaviour
     [Header("Setup")]
     [SerializeField] private float _Zoom;
     [SerializeField] private GameObject _WeaponPrefab;
+    [SerializeField] private Transform _WeaponSpawnPoint;
     [SerializeField] private Vector3 ZoomedPos;
     [Header("Events")]
     public UnityEvent OnSelectWeapon;
     public float defaultZoom { get { return _Zoom; } private set {} }
     public GameObject GetWeaponPrefab { get { return _WeaponPrefab; } }
+
+    public Transform WeaponSpawnPoint { get { return _WeaponSpawnPoint; } private set {} }
 
     private Vector3 c_originalPos;
 

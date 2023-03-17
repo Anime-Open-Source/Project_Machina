@@ -45,11 +45,11 @@ public class WeaponManager : SingletonGeneric<WeaponManager>
 
     }
 
-    public void GetWeapons(Transform Caller)
+    public void GetWeapons(GameObject Caller)
     {
         //Debug.Log("Called");
         GameObject c_WeaponToCall = Caller.GetComponent<SelectorButton>().GetWeaponPrefab;
-        GetWeaponsGameobject(c_WeaponToCall, Caller);
+        GetWeaponsGameobject(c_WeaponToCall, Caller.GetComponent<SelectorButton>().WeaponSpawnPoint);
     }
 
 }
