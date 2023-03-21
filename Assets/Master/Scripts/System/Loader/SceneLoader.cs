@@ -5,15 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
-    [SerializeField] private string _mapSceneName;
+    [SerializeField] private string _mapSceneNameToLoad;
+    [SerializeField] private string _currentMapName;
     
 
     public void LoadGameScene()
     {
 
-        if (!SceneManager.GetSceneByName(_mapSceneName).IsValid())
+        if (!SceneManager.GetSceneByName(_mapSceneNameToLoad).IsValid())
         {
-            StartCoroutine(LoadScene(_mapSceneName, LoadSceneMode.Additive));
+            StartCoroutine(LoadScene(_mapSceneNameToLoad, LoadSceneMode.Additive));
         }
 
     }
@@ -37,7 +38,8 @@ public class SceneLoader : MonoBehaviour
             yield return null;
         }
         //SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-        UnloadScene(SceneManager.GetSceneByBuildIndex(0));
+        Time.timeScale = 1f;
+        UnloadScene(SceneManager.GetSceneByName(_currentMapName));
 
 
     }
